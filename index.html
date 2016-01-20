@@ -1,6 +1,51 @@
 <!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
 <html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="description" content="WebRTC code samples">
+  <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+  <meta itemprop="description" content="Client-side WebRTC code samples">
+  <meta itemprop="name" content="WebRTC code samples">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#ffffff">
+
+  <base target="_blank">
+
+  <title>getUserMedia</title>
+
+</head>
+
 <body>
-<h1>BERLIN W-compilation</h1>
+
+  <div id="container">
+
+
+    <video id="video" autoplay width="100" height="100"></video>
+
+
+    <canvas id="canvas-source" width="500" height="500" style="border:1px solid #000000;">
+    </canvas>
+
+    <canvas id="canvas-blended" width="500" height="500" style="border:1px solid #000000;">
+    </canvas>
+
+    <canvas id="canvas-diff" width="200" height="100" style="border:1px solid #000000;">
+    </canvas>
+
+  </div>
+  <script src="js/adapter.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/main.js"></script>
+
+  <script src="js/lib/ga.js"></script>
+
 </body>
 </html>

@@ -7,6 +7,15 @@
  *  tree.
 -->
 <html>
+<style>
+
+  * { margin:0; padding:0; } /* to remove the top and left whitespace */
+
+  html, body { width:100%; height:100%; } /* just to be sure these are full screen*/
+
+  video { display:none;width:100%; height:100%;} /* To remove the scrollbars */
+
+</style>
 <head>
 
   <meta charset="utf-8">
@@ -28,23 +37,24 @@
   <div id="container">
 
 
-    <video id="video" autoplay width="100" height="100"></video>
+    <video id="video" autoplay hidden ></video>
 
 
-    <canvas id="canvas-source" width="500" height="500" style="border:1px solid #000000;">
+    <canvas id="canvas-source"  hidden>
     </canvas>
 
-    <canvas id="canvas-blended" width="500" height="500" style="border:1px solid #000000;">
+    <canvas id="canvas-blended" hidden>
     </canvas>
 
-    <canvas id="canvas-diff" width="200" height="100" style="border:1px solid #000000;">
+    <canvas id="canvas-video"  hidden>
     </canvas>
 
   </div>
+
+  <script src="js/lib/phaser.min.js"></script>
   <script src="js/adapter.js"></script>
   <script src="js/common.js"></script>
   <script src="js/main.js"></script>
-
   <script src="js/lib/ga.js"></script>
 
 </body>

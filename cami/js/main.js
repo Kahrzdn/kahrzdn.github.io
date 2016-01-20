@@ -21,6 +21,42 @@ navigator.mediaDevices.webkitGetUserMedia ||
 navigator.mediaDevices.mozGetUserMedia ||
 navigator.mediaDevices.msGetUserMedia);
 
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser', {preload: preload, create: create, render: render});
+
+var emitter;
+var videoFrame;
+var videoTexture;
+
+function preload() {
+
+    game.load.image('corona', 'media/star.png');
+
+}
+
+function create() {
+
+    game.stage.backgroundColor = '#000000';
+
+    videoFrame = game.add.sprite(0, 0);
+    emitter = game.add.emitter(game.world.centerX, game.world.centerY, 200);
+
+    emitter.makeParticles('corona');
+
+    emitter.setRotation(0, 0);
+    emitter.setAlpha(0.3, 0.8);
+    emitter.setScale(0,.2,0,.2);
+    emitter.gravity = 1000;
+
+    //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
+    //	The 5000 value is the lifespan of each particle before it's killed
+    emitter.start(false, 900, 40);
+
+
+}
+
+function render() {
+    update();
+}
 
 nav(constraints)
     .then(function (stream) {
@@ -57,27 +93,29 @@ function errorMsg(msg, error) {
 var lastImageData;
 var canvasSource = document.getElementById("canvas-source");
 var canvasBlended = document.getElementById("canvas-blended");
-var canvasDiff = document.getElementById("canvas-diff");
-
+var canvasVideo = document.getElementById("canvas-video");
+canvasSource.width = 100;
+canvasSource.height = 100;
+canvasBlended.width = 100;
+canvasBlended.height = 100;
+canvasVideo.width = window.innerWidth;
+canvasVideo.height = window.innerHeight;
 var contextSource = canvasSource.getContext('2d');
 var contextBlended = canvasBlended.getContext('2d');
-var contextDiff = canvasDiff.getContext('2d');
+var contextVideo = canvasVideo.getContext('2d');
 
 // mirror video
 contextSource.translate(canvasSource.width, 0);
 contextSource.scale(-1, 1);
-
+contextVideo.translate(canvasVideo.width, 0);
+contextVideo.scale(-1, 1);
 var c = 5;
 
 function initialize() {
-    //$('.introduction').fadeOut();
-    //$('.allow').fadeOut();
-    //$('.loading').delay(300).fadeIn();
     start();
 }
 
 function start() {
-    update();
 }
 
 window.requestAnimFrame = (function () {
@@ -95,14 +133,13 @@ function update() {
     drawVideo();
     blend();
     showCenter();
-//  checkAreas();
-    requestAnimFrame(update);
 }
 
 function drawVideo() {
     contextSource.drawImage(video, 0, 0, canvasSource.width, canvasSource.height);//video.width, video.height);
-    console.log(video);
-    console.log(canvasSource.width);
+    contextVideo.drawImage(video, 0, 0, canvasVideo.width, canvasVideo.height);//video.width, video.height);
+    videoTexture = PIXI.Texture.fromCanvas(canvasVideo);
+    videoFrame.loadTexture(videoTexture);
 }
 
 function blend() {
@@ -114,13 +151,12 @@ function blend() {
     if (!lastImageData) lastImageData = contextSource.getImageData(0, 0, width, height);
     // create a ImageData instance to receive the blended result
     var blendedData = contextSource.createImageData(width, height);
-    var diffData = contextSource.createImageData(width, height);
+    //var diffData = contextSource.createImageData(width, height);
     // blend the 2 images
     differenceAccuracy(blendedData.data, sourceData.data, lastImageData.data);
     // draw the result in a canvas
     contextBlended.putImageData(blendedData, 0, 0);
-    contextDiff.putImageData(diffData, 0, 0);
-    // store the current webcam image
+    //contextVideo.putImageData(diffData, 0, 0);
     lastImageData = sourceData;
 }
 
@@ -135,14 +171,11 @@ function threshold(value) {
 
 function showCenter() {
     var c = computeCenter(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height));
-    var context = contextBlended;
-    context.beginPath();
-    context.arc(c.x, c.y, 10, 0, 2 * Math.PI, false);
-    context.fillStyle = 'green';
-    context.fill();
-    context.lineWidth = 5;
-    context.strokeStyle = '#003300';
-    context.stroke();
+    if (c.x && c.y) {
+        emitter.x = c.x;
+        emitter.y = c.y;
+        console.log(c.x);
+    }
 }
 
 function computeCenter(img_data) {
@@ -150,17 +183,17 @@ function computeCenter(img_data) {
     var sum_x = 0;
     var sum_y = 0;
     var n = 0;
+    //console.log(img_data.width * img_data.height);
     while (i < img_data.width * img_data.height) {
         if (img_data.data[4 * i] > 0) {
             n = n + 1;
             sum_x = sum_x + (i % img_data.width);
             sum_y = sum_y + Math.floor(i / img_data.width);
         }
-        ++i;
+        i+=1;
     }
-    return {x: sum_x / n, y: sum_y / n};
+    return {x: (canvasVideo.width/canvasSource.width)*sum_x / n, y: (canvasVideo.height/canvasSource.height)*sum_y / n};
 }
-
 
 function differenceAccuracy(target, data1, data2) {
     if (data1.length != data2.length) return null;
@@ -173,54 +206,6 @@ function differenceAccuracy(target, data1, data2) {
         target[4 * i + 1] = diff;
         target[4 * i + 2] = diff;
         target[4 * i + 3] = 0xFF;
-        ++i;
+        i+=1;
     }
 }
-
-//function checkAreas() {
-//  var data;
-//  for (var h = 0; h < hotSpots.length; h++) {
-//    var blendedData = contextBlended.getImageData(hotSpots[h].x, hotSpots[h].y, hotSpots[h].width, hotSpots[h].height);
-//    var i = 0;
-//    var average = 0;
-//    while (i < (blendedData.data.length * 0.25)) {
-//      // make an average between the color channel
-//      average += (blendedData.data[i * 4] + blendedData.data[i * 4 + 1] + blendedData.data[i * 4 + 2]) / 3;
-//      ++i;
-//    }
-//    // calculate an average between the color values of the spot area
-//    average = Math.round(average / (blendedData.data.length * 0.25));
-//    if (average > 10) {
-//      // over a small limit, consider that a movement is detected
-//      data = {confidence: average, spot: hotSpots[h]};
-//      $(data.spot.el).trigger('motion', data);
-//    }
-//  }
-//}
-
-//function getCoords() {
-//  $('#hotSpots').children().each(function (i, el) {
-//    var ratio = $("#canvas-highlights").width() / $('video').width();
-//    hotSpots[i] = {
-//      x:      this.offsetLeft / ratio,
-//      y:      this.offsetTop / ratio,
-//      width:  this.scrollWidth / ratio,
-//      height: this.scrollHeight / ratio,
-//      el:     el
-//    };
-//  });
-//  if (OUTLINES) highlightHotSpots();
-//}
-
-//$(window).on('start resize', getCoords);
-
-//function highlightHotSpots() {
-//  var canvas = $("#canvas-highlights")[0];
-//  var ctx = canvas.getContext('2d');
-//  canvas.width = canvas.width;
-//  hotSpots.forEach(function (o, i) {
-//    ctx.strokeStyle = 'rgba(0,255,0,0.6)';
-//    ctx.lineWidth = 1;
-//    ctx.strokeRect(o.x, o.y, o.width, o.height);
-//  });
-//}

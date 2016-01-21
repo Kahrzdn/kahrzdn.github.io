@@ -21,16 +21,24 @@ navigator.mediaDevices.webkitGetUserMedia ||
 navigator.mediaDevices.mozGetUserMedia ||
 navigator.mediaDevices.msGetUserMedia);
 
-var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser', {preload: preload, create: create, render: render});
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser', {
+    preload: preload,
+    create: create,
+    render: render
+});
 
 var emitter;
 var videoFrame;
 var videoTexture;
+var map;
+var layer;
+var posspr;
 
 function preload() {
 
     game.load.image('corona', 'media/star.png');
-
+    game.load.image('tiles', 'media/tileset.png');
+    game.load.tilemap('tilemap', 'media/tileset.json', null, Phaser.Tilemap.TILED_JSON);
 }
 
 function create() {
@@ -38,24 +46,52 @@ function create() {
     game.stage.backgroundColor = '#000000';
 
     videoFrame = game.add.sprite(0, 0);
+
+
+    map = game.add.tilemap('tilemap')
+    game.world.setBounds(0, 0, 20000, 2000);
+    posspr = game.add.sprite(450, 80, 'corona');
+    posspr.anchor.setTo(0.5, 0.5);
+    game.camera.follow(posspr);
+    map.addTilesetImage('tiles-world1', 'tiles');
+    layer = map.create('level1', 600, 30, 21, 21);
+    layer.scrollFactorX = 0.5;
+    layer.scrollFactorY = 0.5;
+    layer.wrap =false;
+    videoFrame.fixedToCamera = true;
+    //layer.scroll = 8;
+    for (var i=0;i<900;i++)
+        map.putTile(121+i%1,i%map.layer.width,19);
+
     emitter = game.add.emitter(game.world.centerX, game.world.centerY, 200);
 
+    emitter.fixedToCamera = true;
     emitter.makeParticles('corona');
 
     emitter.setRotation(0, 0);
     emitter.setAlpha(0.3, 0.8);
-    emitter.setScale(0,.2,0,.2);
+    emitter.setScale(0, .2, 0, .2);
     emitter.gravity = 1000;
 
     //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
     //	The 5000 value is the lifespan of each particle before it's killed
     emitter.start(false, 900, 40);
 
-
 }
 
 function render() {
+
     update();
+}
+
+function drawTiles() {
+    posspr.x+=4;
+    //layer.position.x=(layer.position.x-1)%21;
+    //for (var i=0;i<900;i++) {
+    //    map.putTile(209,i%map.layer.width,~~(i/map.layer.width));
+    //}
+
+
 }
 
 nav(constraints)
@@ -133,7 +169,9 @@ function update() {
     drawVideo();
     blend();
     showCenter();
+    drawTiles();
 }
+
 
 function drawVideo() {
     contextSource.drawImage(video, 0, 0, canvasSource.width, canvasSource.height);//video.width, video.height);
@@ -172,9 +210,9 @@ function threshold(value) {
 function showCenter() {
     var c = computeCenter(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height));
     if (c.x && c.y) {
-        emitter.x = c.x;
-        emitter.y = c.y;
-        console.log(c.x);
+        emitter.x = c.x+videoFrame.x;
+        emitter.y = c.y+videoFrame.y;
+        // console.log(c.x);
     }
 }
 
@@ -190,9 +228,12 @@ function computeCenter(img_data) {
             sum_x = sum_x + (i % img_data.width);
             sum_y = sum_y + Math.floor(i / img_data.width);
         }
-        i+=1;
+        i += 1;
     }
-    return {x: (canvasVideo.width/canvasSource.width)*sum_x / n, y: (canvasVideo.height/canvasSource.height)*sum_y / n};
+    return {
+        x: (canvasVideo.width / canvasSource.width) * sum_x / n,
+        y: (canvasVideo.height / canvasSource.height) * sum_y / n
+    };
 }
 
 function differenceAccuracy(target, data1, data2) {
@@ -206,6 +247,6 @@ function differenceAccuracy(target, data1, data2) {
         target[4 * i + 1] = diff;
         target[4 * i + 2] = diff;
         target[4 * i + 3] = 0xFF;
-        i+=1;
+        i += 1;
     }
 }

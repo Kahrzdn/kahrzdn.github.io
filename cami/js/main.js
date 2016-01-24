@@ -120,7 +120,7 @@ function create() {
 function createNewNPC() {
     if (Math.random() < 0.009) {
         npc = game.add.sprite(950 + game.camera.x, 420, 'sheet');
-        npc.frame = 26;
+        npc.frame = 29;
         npc.anchor.setTo(0.5, 0.5);
         game.physics.enable(npc);
         npc.body.collideWorldBounds = true;
@@ -156,10 +156,14 @@ function change(a, b) {
 }
 
 function hit(a, b) {
-    a.frame +=30;
-    console.log(a);
-    console.log(b);
-    console.log("------");
+    var t = new Date().getTime();
+    if (!a.hittime || t-a.hittime>100) {
+        a.hittime = t;
+        a.frame += 30;
+        console.log(a);
+        console.log(b);
+        console.log("------");
+    }
 
 }
 

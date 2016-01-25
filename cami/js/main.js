@@ -22,11 +22,12 @@ navigator.mediaDevices.mozGetUserMedia ||
 navigator.mediaDevices.msGetUserMedia);
 
 var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser', {
-    preload: preload,
-    create: create,
-    render: render,
-    update: update
-});
+        preload: preload,
+        create: create,
+        render: render,
+        update: update
+    },
+    false,false);
 
 var emitter;
 var videoFrame;
@@ -34,9 +35,14 @@ var videoTexture;
 var map;
 var layer;
 var posspr;
-var npc;
 var npcs = [];
 var delta = 4;
+var score = 0;
+var scoreText;
+var tileW;
+var tileH;
+var laneW=500;
+var tSize = 21;
 
 function preload() {
 
@@ -44,6 +50,7 @@ function preload() {
     game.load.image('tiles', 'media/tileset.png');
     game.load.tilemap('tilemap', 'media/tileset.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('sheet', 'media/tileset.png', 23, 23, 30 * 20);
+    game.load.bitmapFont('gem', 'media/gem.png', 'media/gem.xml');
 }
 
 function create() {
@@ -55,20 +62,18 @@ function create() {
 
 
     map = game.add.tilemap('tilemap');
-    game.world.setBounds(0, 0, 10000, 2000);
+    game.world.setBounds(0, 0, laneW*tSize, game.camera.height+tSize*2);
+
+    tileW = Math.round(game.camera.width/tSize);
+    tileH = Math.round(game.camera.height/tSize);
 
     posspr = game.add.sprite(450, 30, 'sheet');
     posspr.frame = 179;
     posspr.anchor.setTo(0.5, 0.5);
-    //game.physics.enable(posspr);
-    //posspr.body.gravity.y = 1000;
-    //game.physics.arcade.collide(posspr, map);
     game.camera.follow(posspr);
     map.addTilesetImage('tiles-world1', 'tiles');
     map.setCollision([123, 126, 127, 152, 156, 157, 179, 200]);
     layer = map.create('level1', 600, 40, 21, 21);
-    //   layer.scrollFactorX = 0.5;
-    //   layer.scrollFactorY = 0.5;
     layer.wrap = false;
     layer.debug = false;
 
@@ -76,33 +81,36 @@ function create() {
     //layer.scroll = 8;
     var height = 10;
     var lx = 0;
-    for (var i = 0; i < 900; i++) {
+    for (var i = 0; i < laneW; i++) {
         var r = Math.random();
         for (var j = 1; j <= height; j++) {
-            map.putTile(152, lx, 40 - height + j);
+            map.putTile(152, lx, tileH - height + j);
         }
-        if (r > 0.9 && height < 20) {
+        if (r > 0.9 && height < tileH/2) {
             height++;
-            map.putTile(126, lx, 40 - height);
-            map.putTile(156, lx, 40 - height + 1);
+            map.putTile(126, lx, tileH - height);
+            map.putTile(156, lx, tileH - height + 1);
 
         }
         else if (r < 0.1 && height > 3) {
             height--;
-            map.putTile(200, lx, 40 - height - 2);
-            map.putTile(127, lx, 40 - height - 1);
-            map.putTile(157, lx, 40 - height);
+            map.putTile(200, lx, tileH - height - 2);
+            map.putTile(127, lx, tileH - height - 1);
+            map.putTile(157, lx, tileH - height);
         }
         else {
-            map.putTile(123, lx, 40 - height);
+            map.putTile(123, lx, tileH - height);
+            if (Math.random() < 0.2) {
+                createNewNPC(lx * 21, (tileH - height) * 21);
+            }
         }
         lx++;
     }
+    scoreText = game.add.bitmapText(200, 200, 'gem', "SCORE: "+score, 48);
+    //scoreText.fixToCamera = true;
     emitter = game.add.emitter(game.world.centerX, game.world.centerY, 200);
 
     emitter.fixedToCamera = true;
-    var particules = 6;
-    var _pArray = [10, 12, 20];
 
     emitter.makeParticles('sheet', [376, 377, 378, 379, 179]);
 
@@ -117,59 +125,100 @@ function create() {
 
 }
 
-function createNewNPC() {
-    if (Math.random() < 0.009) {
-        npc = game.add.sprite(950 + game.camera.x, 420, 'sheet');
-        npc.frame = 29;
-        npc.anchor.setTo(0.5, 0.5);
-        game.physics.enable(npc);
-        npc.body.collideWorldBounds = true;
-        npc.body.bounce.y = 0.2;
-        npc.body.gravity.y = 1000;
-
-        //npcs.push(npc);
+function createNewNPC(x, y) {
+    var npc = game.add.sprite(x, y, 'sheet');
+    npc.type = game.rnd.integerInRange(0,6);
+    var frames = [];
+    if (npc.type<=4) {
+        for (var i = 0; i < 11; i++) {
+            frames.push(i + 19 + 30 * npc.type);
+        }
     }
+    else if (npc.type==5) {
+        for (var i = 15*30+20; i < 15*30+20+4; i++) {
+            frames.push(i);
+        }
+    }
+    else if (npc.type==6) {
+        for (var i = 15*30+25; i < 15*30+25+3; i++) {
+            frames.push(i);
+        }
+    }
+
+    npc.animations.add('loop',frames,5+game.rnd.integerInRange(0,10),true,true);
+//    npc.frame = 29;
+    npc.play('loop');
+    npc.anchor.setTo(0.5, 1);
+    game.physics.enable(npc);
+    npc.body.collideWorldBounds = true;
+    npc.body.bounce.y = 0.2;
+    npc.body.gravity.y = 1000;
+    npc.lives = npc.type+1;
+    npc.scale.setTo(1, 1);
+
+    npcs.push(npc);
 }
 
 function render() {
-
-    createNewNPC();
     drawVideo();
     blend();
     showCenter();
     drawTiles();
+    scoreText.x = game.camera.x+10;
+    scoreText.y = 0;
+    scoreText.text = "SCORE: "+score;
 
 }
 
 function update() {
-   // game.physics.arcade.collide(npc, layer);
-    if (npc && !npc.dead) {
-        game.physics.arcade.collide(emitter, npc, hit, null, this);
-        game.physics.arcade.collide(npc, layer, change, null, this);
-    }
-    game.physics.arcade.collide(emitter, layer, change, null, this);
+    // game.physics.arcade.collide(npc, layer);
+    //if (npc && !npc.dead) {
+    game.physics.arcade.collide(emitter, npcs, hit, null, this);
+    game.physics.arcade.collide(npcs, layer, change, null, this);
+    //}
+    game.physics.arcade.collide(emitter, layer, hitGround, null, this);
 
 }
 
+
+
 function change(a, b) {
-   // console.log("dsd");
+    // console.log("dsd");
+}
+
+function hitGround(a, b) {
+    a.scale.set(1,1);
+    a.alpha = 0.6;
+
 }
 
 function hit(a, b) {
     var t = new Date().getTime();
-    if (!a.hittime || t-a.hittime>100) {
-        a.hittime = t;
-        a.frame += 30;
-        console.log(a);
-        console.log(b);
-        console.log("------");
+    if (true || !a.hittime || t - a.hittime > 100) {
+        var emitElem = b;
+        emitElem.destroy();
+        var npc = a;
+        npc.hittime = t;
+        npc.scale.setTo(npc.scale.x+0.2, npc.scale.y+0.2);
+        npc.lives--;
+        score+=1;
+        if (npc.lives<0){
+            var index = npcs.indexOf(npc);
+            if (index > -1) {
+                npcs.splice(index, 1);
+                score+=10;
+            }
+        }
+        //console.log(a);
+        //console.log(b);
+        //console.log("------");
     }
 
 }
 
 function drawTiles() {
     posspr.x += delta;
-    if (posspr.x >= game.world.bounds.x+game.world.bounds.width) {
+    if (posspr.x >= game.world.bounds.x + game.world.bounds.width) {
         delta = -Math.abs(delta);
     }
     if (posspr.x <= game.world.bounds.x) {
@@ -292,10 +341,15 @@ function threshold(value) {
 
 function showCenter() {
     var c = computeCenter(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height));
-    if (c.x && c.y) {
+    if (c.x && c.y && c.x !== 0 && c.y !== 0) {
+        emitter.on = true;
         emitter.x = videoFrame.x + c.x;
         emitter.y = videoFrame.y + c.y;
-        // console.log(c.x);
+
+//        console.log(c.x);
+    }
+    else {
+        emitter.on = false;
     }
 }
 

@@ -41,8 +41,9 @@ var score = 0;
 var scoreText;
 var tileW;
 var tileH;
-var laneW=500;
+var laneW=200;
 var tSize = 21;
+var dropSpots = [];
 
 function preload() {
 
@@ -100,9 +101,7 @@ function create() {
         }
         else {
             map.putTile(123, lx, tileH - height);
-            if (Math.random() < 0.2) {
-                createNewNPC(lx * 21, (tileH - height) * 21);
-            }
+            dropSpots.push(lx);
         }
         lx++;
     }
@@ -122,7 +121,26 @@ function create() {
     //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
     //	The 5000 value is the lifespan of each particle before it's killed
     emitter.start(false, 900, 40);
+    startLevel();
+}
 
+function startLevel() {
+    console.log("startLevel");
+    score = 0;
+    createNPCs();
+}
+function createNPCs() {
+    console.log("cleanUp");
+    for (var i=0;i<npcs.length;i++) {
+        npcs[i].destroy();
+    }
+    console.log("CreateNew");
+    for(var i =0;i<dropSpots.length;i++){
+        if (Math.random() < 0.2) {
+            createNewNPC(dropSpots[i] * 21, (tileH/2-1) * 21);
+        }
+    }
+    console.log("start");
 }
 
 function createNewNPC(x, y) {
@@ -223,6 +241,7 @@ function drawTiles() {
     }
     if (posspr.x <= game.world.bounds.x) {
         delta = Math.abs(delta);
+        startLevel();
     }
 
     //layer.position.x=(layer.position.x-1)%21;

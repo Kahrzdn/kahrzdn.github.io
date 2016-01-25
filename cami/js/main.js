@@ -44,6 +44,7 @@ var tileH;
 var laneW=200;
 var tSize = 21;
 var dropSpots = [];
+var fx;
 
 function preload() {
 
@@ -52,6 +53,7 @@ function preload() {
     game.load.tilemap('tilemap', 'media/tileset.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('sheet', 'media/tileset.png', 23, 23, 30 * 20);
     game.load.bitmapFont('gem', 'media/gem.png', 'media/gem.xml');
+    game.load.audio('sfx', 'media/fx_mixdown.ogg');
 }
 
 function create() {
@@ -61,6 +63,9 @@ function create() {
 
     videoFrame = game.add.sprite(0, 0);
 
+    fx = game.add.audio('sfx');
+    fx.allowMultiple = true;
+    fx.addMarker('ping', 10, 1.0);
 
     map = game.add.tilemap('tilemap');
     game.world.setBounds(0, 0, laneW*tSize, game.camera.height+tSize*2);
@@ -107,7 +112,7 @@ function create() {
     }
     scoreText = game.add.bitmapText(200, 200, 'gem', "SCORE: "+score, 48);
     //scoreText.fixToCamera = true;
-    emitter = game.add.emitter(game.world.centerX, game.world.centerY, 200);
+    emitter = game.add.emitter(game.world.centerX, game.world.centerY   );
 
     emitter.fixedToCamera = true;
 
@@ -120,12 +125,15 @@ function create() {
 
     //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
     //	The 5000 value is the lifespan of each particle before it's killed
-    emitter.start(false, 900, 40);
+   // emitter.start(false, 900, 40);
     startLevel();
 }
 
 function startLevel() {
     console.log("startLevel");
+    emitter.kill();
+    emitter._quantity = 0;
+    emitter.start(false, 900, 40);
     score = 0;
     createNPCs();
 }
@@ -166,11 +174,12 @@ function createNewNPC(x, y) {
     npc.animations.add('loop',frames,5+game.rnd.integerInRange(0,10),true,true);
 //    npc.frame = 29;
     npc.play('loop');
-    npc.anchor.setTo(0.5, 1);
+    npc.anchor.setTo(0, 1);
     game.physics.enable(npc);
-    npc.body.collideWorldBounds = true;
+    npc.body.collideWorldBounds = false;
     npc.body.bounce.y = 0.2;
     npc.body.gravity.y = 1000;
+    npc.body.velocity.x= 100*(Math.random()-0.5);
     npc.lives = npc.type+1;
     npc.scale.setTo(1, 1);
 
@@ -214,7 +223,7 @@ function hit(a, b) {
     var t = new Date().getTime();
     if (true || !a.hittime || t - a.hittime > 100) {
         var emitElem = b;
-        emitElem.destroy();
+        emitElem.kill();
         var npc = a;
         npc.hittime = t;
         npc.scale.setTo(npc.scale.x+0.2, npc.scale.y+0.2);
@@ -226,6 +235,8 @@ function hit(a, b) {
                 npcs.splice(index, 1);
                 score+=10;
             }
+            fx.play('ping');
+
         }
         //console.log(a);
         //console.log(b);
@@ -360,7 +371,8 @@ function threshold(value) {
 
 function showCenter() {
     var c = computeCenter(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height));
-    if (c.x && c.y && c.x !== 0 && c.y !== 0) {
+   // console.log(c.x);
+   if (c.x && c.y && c.x !== 0 && c.y !== 0) {
         emitter.on = true;
         emitter.x = videoFrame.x + c.x;
         emitter.y = videoFrame.y + c.y;
@@ -370,6 +382,8 @@ function showCenter() {
     else {
         emitter.on = false;
     }
+
+
 }
 
 function computeCenter(img_data) {

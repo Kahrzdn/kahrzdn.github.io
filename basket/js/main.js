@@ -1,10 +1,3 @@
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
 
 'use strict';
 
@@ -44,13 +37,8 @@ function preload() {
 
     game.load.image('basketball', 'media/basketball.png');
     game.load.image('finger', 'media/finger.png');
-
-    game.load.image('tiles', 'media/tileset.png');
-    game.load.tilemap('tilemap', 'media/tileset.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('sheet', 'media/tileset.png', 23, 23, 30 * 20);
-    game.load.bitmapFont('gem', 'media/gem.png', 'media/gem.xml');
-    game.load.audio('sfx', 'media/fx_mixdown.ogg');
     game.load.physics("sprite_physics", "media/fingerph.json");
+    game.load.bitmapFont('gem', 'media/gem.png', 'media/gem.xml');
 }
 
 function create() {
@@ -62,22 +50,10 @@ function create() {
 
     videoFrame = game.add.sprite(0, 0);
 
-    fx = game.add.audio('sfx');
-    fx.allowMultiple = true;
-    fx.addMarker('ping', 10, 1.0);
-
-    map = game.add.tilemap('tilemap');
     game.world.setBounds(0, 0, game.camera.width, game.camera.height);
 
 
     scoreText = game.add.bitmapText(200, 200, 'gem', "SCORE: " + score, 48);
-    //scoreText.fixToCamera = true;
-    emitter = game.add.emitter(game.world.centerX, game.world.centerY);
-
-
-    //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
-    //	The 5000 value is the lifespan of each particle before it's killed
-    // emitter.start(false, 900, 40);
     startLevel();
 }
 
@@ -89,23 +65,14 @@ function startLevel() {
 
 function createBall(x, y) {
     ball = game.add.sprite(x, y, 'basketball');
-
-    //ball.animations.add('loop',frames,5+game.rnd.integerInRange(0,10),true,true);
-//    npc.frame = 29;
-    // ball.play('loop');
     ball.anchor.setTo(0.5, 0.5);
-    //var body = game.physics.
     game.physics.p2.enable(ball);
     ball.body.setCircle(40);
     ball.body.collideWorldBounds = true;
     ball.body.fixedRotation = false;
-    //ball.body.bounce.y = 1.0;
     ball.body.gravity.y = 1000;
-    //  ball.body.angularVelocity = -450;
-// ball.rotation = 10;
 
     ball.body.velocity.x = 100 * (Math.random() - 0.5);
-    //ball.lives = ball.type + 1;
     ball.scale.setTo(0.1, 0.1);
 }
 
@@ -130,7 +97,6 @@ function render() {
     drawVideo();
     blend();
     showCenter();
-    drawFingers();
     scoreText.x = game.camera.x + 10;
     scoreText.y = 0;
     scoreText.text = "SCORE: " + score;
@@ -139,20 +105,9 @@ function render() {
 
 function update() {
     updateFingers();
-
-//    console.log(game.input.activePointer.position);
-
     fingers[0].body.x = game.input.activePointer.position.x;
-
     fingers[0].body.y = game.input.activePointer.position.y;
-
     game.physics.arcade.collide(ball, fingers);
-    //if (npc && !npc.dead) {
-    //game.physics.arcade.collide(emitter, npcs, hit, null, this);
-    //game.physics.arcade.collide(npcs, layer, change, null, this);
-    //}
-    //game.physics.arcade.collide(emitter, layer, hitGround, null, this);
-//
 }
 
 
@@ -175,10 +130,6 @@ function updateFingers() {
     }
 }
 
-function drawFingers() {
-
-
-}
 
 nav(constraints)
     .then(function (stream) {

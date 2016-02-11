@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<style>
+
+  * { margin:0; padding:0; } /* to remove the top and left whitespace */
+
+  html, body { width:100%; height:100%; } /* just to be sure these are full screen*/
+
+  video { display:none;width:100%; height:100%;} /* To remove the scrollbars */
+
+</style>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="description" content="WebRTC code samples">
+  <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+  <meta itemprop="description" content="Client-side WebRTC code samples">
+  <meta itemprop="name" content="WebRTC code samples">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#ffffff">
+
+  <base target="_blank">
+
+  <title>getUserMedia</title>
+
+</head>
+
+<body>
+  <div id="container">
+
+
+    <video id="video" autoplay hidden ></video>
+
+    <canvas id="canvas-source"  hidden>
+    </canvas>
+
+    <canvas id="canvas-blended" hidden>
+    </canvas>
+
+    <canvas id="canvas-video"  hidden>
+    </canvas>
+
+  </div>
+
+  <script src="js/lib/phaser.min.js"></script>
+  <script src="js/adapter.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/lib/ga.js"></script>
+
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 'use strict';
 
 
@@ -27,6 +26,8 @@ var videoTexture;
 var map;
 var fingers = [];
 var ball;
+var netl;
+var netr;
 var delta = 4;
 var score = 0;
 var scoreText;
@@ -36,19 +37,26 @@ var fx;
 function preload() {
 
     game.load.image('basketball', 'media/basketball.png');
+    game.load.image('netl', 'media/netl.png');
+    game.load.image('netr', 'media/netr.png');
+
     game.load.image('finger', 'media/finger.png');
-    game.load.physics("sprite_physics", "media/fingerph.json");
+    game.load.physics("sprite_physics", "media/shapes.json");
     game.load.bitmapFont('gem', 'media/gem.png', 'media/gem.xml');
 }
 
 function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 1000;
-    game.physics.p2.restitution = 0.8;
+    game.physics.p2.restitution = 1.01;
 
     game.stage.backgroundColor = '#000000';
 
     videoFrame = game.add.sprite(0, 0);
+    //var greyFilter = new PIXI.GreyFilter();
+
+// set the filter
+    //videoFrame.filters = [greyFilter];
 
     game.world.setBounds(0, 0, game.camera.width, game.camera.height);
 
@@ -58,28 +66,34 @@ function create() {
 }
 
 function startLevel() {
-    createBall(200, 200);
-    createFingers()
+    createBall();
+    createFingers();
+    createNet();
 
 }
 
-function createBall(x, y) {
-    ball = game.add.sprite(x, y, 'basketball');
+function createBall() {
+    ball = game.add.sprite(game.camera.width / 2, game.camera.height / 2, 'basketball');
     ball.anchor.setTo(0.5, 0.5);
     game.physics.p2.enable(ball);
     ball.body.setCircle(40);
     ball.body.collideWorldBounds = true;
+    ball.body.mass = 100;
     ball.body.fixedRotation = false;
     ball.body.gravity.y = 1000;
 
-    ball.body.velocity.x = 100 * (Math.random() - 0.5);
+    ball.body.velocity.x = 2000 * (Math.random() - 0.5);
+    ball.body.velocity.y = 1000;
+
     ball.scale.setTo(0.1, 0.1);
 }
 
 function createFingers() {
     for (var i = 0; i < fingerNum; i++) {
         var finger = game.add.sprite(i * (game.camera.width) / fingerNum, 70 * Math.sin(10 * i / fingerNum) + game.camera.height, 'finger');
+        var col = Phaser.Color.HSLtoRGB(0, 255, 256 * i / fingerNum);
 
+        finger.tint = col.r * 256 * 256 + col.g * 256 + col.b;
         finger.anchor.setTo(0, 0);
         finger.scale.setTo(1, 1);
         game.physics.p2.enable(finger);
@@ -91,12 +105,29 @@ function createFingers() {
 
         fingers.push(finger);
     }
+}
+
+function createNet() {
+    netl = game.add.sprite(0, game.camera.height / 4, 'netl');
+    netl.position.x = netl.width / 2;
+    game.physics.p2.enable(netl);
+    netl.body.static = true;
+    netl.body.clearShapes();
+    netl.body.loadPolygon("sprite_physics", "netl");
+
+    netr = game.add.sprite(game.camera.width, game.camera.height / 4, 'netr');
+    netr.position.x = game.camera.width - netr.width / 4;
+    game.physics.p2.enable(netr);
+    netr.body.static = true;
+    netr.body.clearShapes();
+    netr.body.loadPolygon("sprite_physics", "netr");
 
 }
+
 function render() {
     drawVideo();
     blend();
-    showCenter();
+    updateMovement();
     scoreText.x = game.camera.x + 10;
     scoreText.y = 0;
     scoreText.text = "SCORE: " + score;
@@ -108,6 +139,8 @@ function update() {
     fingers[0].body.x = game.input.activePointer.position.x;
     fingers[0].body.y = game.input.activePointer.position.y;
     game.physics.arcade.collide(ball, fingers);
+    //netr.anchor.x = 1;
+
 }
 
 
@@ -115,17 +148,14 @@ function change(a, b) {
     // console.log("dsd");
 }
 
-function addToFinger(x) {
-    for (var i = 0; i < fingers.length; i++) {
-        if (x >= fingers[i].body.x && x <= fingers[i].body.x + fingers[i].width) {
-            fingers[i].body.y = Math.max(game.camera.height-fingers[i].height*0.5,fingers[i].body.y-20);
-        }
-    }
+function addToFinger(index, value) {
+    fingers[index].body.y = Math.max(game.camera.height - fingers[index].height * 0.5, fingers[index].body.y - 190 * value);
+
 }
 
 function updateFingers() {
     for (var i = 0; i < fingers.length; i++) {
-        fingers[i].body.y = Math.min(game.camera.height+50, fingers[i].body.y+1);
+        fingers[i].body.y = Math.min(game.camera.height + 50, fingers[i].body.y + 2);
 
     }
 }
@@ -234,40 +264,64 @@ function fastAbs(value) {
 }
 
 function threshold(value) {
-    return (value > 0x15) ? 0xFF : 0;
+    //return (value > 0x15) ? 0xFF : 0;
+
+    return (value > 0x15) ? value : 0;
 }
 
-function showCenter() {
-    var c = computeCenter(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height));
-    // console.log(c.x);
-    if (c.x && c.y && c.x !== 0 && c.y !== 0) {
-        addToFinger(c.x);
 
-        console.log(c.x);
-    }
-    else {
-    }
+function updateMovement() {
+    var cols = computeColumns(contextBlended.getImageData(0, 0, canvasSource.width, canvasSource.height), fingerNum);
+    for (var i = 0; i < cols.length; i++) {
 
+        addToFinger(i, cols[i]);
+    }
 }
+function computeColumns(img_data, colNum) {
 
-function computeCenter(img_data) {
+    var sum = 0;
+    var cols = new Array(colNum);
+    for (var i = 0; i < colNum; i++) {
+        cols[i] = 0;
+    }
+    var colIndex;
     var i = 0;
-    var sum_x = 0;
-    var sum_y = 0;
-    var n = 0;
     //console.log(img_data.width * img_data.height);
     while (i < img_data.width * img_data.height) {
         if (img_data.data[4 * i] > 0) {
-            n = n + 1;
-            sum_x = sum_x + (i % img_data.width);
-            sum_y = sum_y + Math.floor(i / img_data.width);
+            sum += img_data.data[4 * i];
+            colIndex = Math.floor(colNum * (i % img_data.width) / img_data.width);
+            cols[colIndex] += img_data.data[4 * i];
         }
         i += 1;
     }
-    return {
-        x: (canvasVideo.width / canvasSource.width) * sum_x / n,
-        y: (canvasVideo.height / canvasSource.height) * sum_y / n
-    };
+    if (sum != 0) {
+        for (var i = 0; i < colNum; i++) {
+            cols[i] = cols[i] / sum;
+
+        }
+        var avg = Math.min(sum / colNum,0.1);
+        var topSum = 0;
+        for (var i = 0; i < colNum; i++) {
+            if (cols[i] >= avg) {
+                topSum += cols[i];
+            }
+            else {
+                cols[i] = 0;
+            }
+        }
+        if (topSum!=0) {
+            for (var i = 0; i < colNum; i++) {
+                cols[i] = cols[i] / topSum;
+                if (isNaN(cols[i])) {
+                    console.log(topSum);
+                }
+
+            }
+        }
+
+    }
+    return cols;
 }
 
 function differenceAccuracy(target, data1, data2) {
@@ -276,7 +330,9 @@ function differenceAccuracy(target, data1, data2) {
     while (i < (data1.length * 0.25)) {
         var average1 = (data1[4 * i] + data1[4 * i + 1] + data1[4 * i + 2]) / 3;
         var average2 = (data2[4 * i] + data2[4 * i + 1] + data2[4 * i + 2]) / 3;
+        //var diff = threshold(fastAbs(average1 - average2));
         var diff = threshold(fastAbs(average1 - average2));
+
         target[4 * i] = diff;
         target[4 * i + 1] = diff;
         target[4 * i + 2] = diff;

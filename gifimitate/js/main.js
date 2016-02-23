@@ -39,12 +39,20 @@ function update() {
 nav(constraints)
     .then(function (stream) {
         var videoTracks = stream.getVideoTracks();
-        initialize();
         console.log('Got stream with constraints:', constraints);
         console.log('Using video device: ' + videoTracks[0].label);
+        //setTimeout(function(){
+        //    canvasVideo.width = video.videoWidth;
+        //    canvasVideo.height = video.videoHeight;
+        //}, 200);
 
         stream.onended = function () {
             console.log('Stream ended');
+        };
+        stream.onactive = function() {
+            canvasVideo.width = video.videoWidth;
+            canvasVideo.height = video.videoHeight;
+
         };
         window.stream = stream; // make variable available to browser console
         video.srcObject = stream;
@@ -68,33 +76,17 @@ function errorMsg(msg, error) {
     }
 }
 
-var lastImageData;
-var canvasSource = document.getElementById("canvas-source");
-var canvasBlended = document.getElementById("canvas-blended");
 var canvasVideo = document.getElementById("canvas-video");
-canvasSource.width = 100;
-canvasSource.height = 100;
-canvasBlended.width = 100;
-canvasBlended.height = 100;
 canvasVideo.width = window.innerWidth/2;
 canvasVideo.height = window.innerHeight/3;
-var contextSource = canvasSource.getContext('2d');
-var contextBlended = canvasBlended.getContext('2d');
 var contextVideo = canvasVideo.getContext('2d');
 
 // mirror video
-contextSource.translate(canvasSource.width, 0);
-contextSource.scale(-1, 1);
 contextVideo.translate(canvasVideo.width, 0);
 contextVideo.scale(-1, 1);
 var c = 5;
 
-function initialize() {
-    start();
-}
 
-function start() {
-}
 
 var dlName = "dance.gif";
 var sup1;
@@ -157,8 +149,7 @@ window.requestAnimFrame = (function () {
 
 
 function drawVideo() {
-    contextSource.drawImage(video, canvasSource.width, 0, canvasSource.width, canvasSource.height);//video.width, video.height);
-    contextVideo.drawImage(video, 0, 0, canvasVideo.width, canvasVideo.height);//video.width, video.height);
+    contextVideo.drawImage(video,0 , 0, window.innerWidth/2,video.videoHeight/video.videoWidth*window.innerWidth/2);//, 200,200);//canvasVideo.width, canvasVideo.height);//video.width, video.height);
     videoTexture = PIXI.Texture.fromCanvas(canvasVideo);
     videoFrame.loadTexture(videoTexture);
 }

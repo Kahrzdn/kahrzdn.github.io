@@ -64,7 +64,7 @@
 <input type="file" id="file-upload" onchange="handleFiles(this.files)" accept="image/gif"/>
 <div style="width: 100%; overflow: hidden;">
     <div class="sourcegif"  style="width:50%; float: left;">
-        <img id="blah" src="./dance.gif"/>
+        <img id="blah" src="./dance.gif"/ >
     </div>
     <div style="width:50% float: right;">
         <a id="giflink" download="YourFileName.gif" href="data:image/gif;">
@@ -84,7 +84,7 @@
 
 <script type="text/javascript">
     var sup1;
-    sup1 = new SuperGif ({gif: document.getElementById ('blah')});
+    sup1 = new SuperGif ({gif: document.getElementById ('blah'), max_width:window.width/2});
     sup1.load ();
 </script>
 

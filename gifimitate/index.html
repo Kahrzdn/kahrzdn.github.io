@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* to remove the top and left whitespace */
+
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* just to be sure these are full screen*/
+
+    video {
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+
+    button {
+        padding: 10px 15px;
+        background: #4479BA;
+        color: #FFF;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+
+    <title>getUserMedia</title>
+
+</head>
+
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<label for="file-upload" class="pure-button">
+    <i class="fa fa-cloud-upload"></i> Upload another GIF to imitate
+</label>
+
+<input type="file" id="file-upload" onchange="handleFiles(this.files)" accept="image/gif"/>
+<div class="sourcegif">
+    <img id="blah" src="./example_gifs/dance.gif"/>
+</div>
+<script src="js/lib/libgif.js"></script>
+<script src="js/lib/rubbable.js"></script>
+<script src="js/lib/jsgif/b64.js"></script>
+<script src="js/lib/jsgif/LZWEncoder.js"></script>
+<script src="js/lib/jsgif/NeuQuant.js"></script>
+<script src="js/lib/jsgif/GIFEncoder.js"></script>
+
+<br>
+
+<script type="text/javascript">
+    var sup1;
+    sup1 = new SuperGif ({gif: document.getElementById ('blah')});
+    sup1.load ();
+</script>
+
+<!--
+<a href="javascript:;" onmousedown="sup1.pause(); return false;">Pause</a> |
+<a href="javascript:;" onmousedown="sup1.play(); return false;">Play</a> |
+<a href="javascript:;" onmousedown="sup1.move_to(0); return false;">Restart</a> |
+<a href="javascript:;" onmousedown="sup1.move_relative(1); return false;">Step forward</a> |
+<a href="javascript:;" onmousedown="sup1.move_relative(-1); return false;">Step back</a>
+-->
+<div id="container">
+
+
+    <video id="video" autoplay hidden></video>
+
+    <canvas id="canvas-source" hidden>
+    </canvas>
+
+    <canvas id="canvas-blended" hidden>
+    </canvas>
+
+    <canvas id="canvas-video" hidden>
+    </canvas>
+    <a id="giflink" download="YourFileName.gif" href="data:image/gif;">
+        <img id="gifimage">
+    </a>
+    <button class="pure-button" onclick="recordGifStart();">Start</button>
+    <button class="pure-button" onclick="recordFrame();">Next frame</button>
+    <button class="pure-button" onclick="recordGifEnd();">Finish</button>
+
+</div>
+
+
+<script src="js/lib/phaser.js"></script>
+<script src="js/adapter.js"></script>
+<script src="js/common.js"></script>
+<script src="js/main.js"></script>
+<script src="js/lib/ga.js"></script>
+
+
+</body>
+</html>
+
+

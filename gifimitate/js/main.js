@@ -43,7 +43,9 @@ nav(constraints)
         console.log('Using video device: ' + videoTracks[0].label);
         setTimeout(function(){
             canvasVideo.width = window.innerWidth/2;
-            canvasVideo.height = video.videoHeight/video.videoWidth*window.innerWidth/2;
+            canvasVideo.height = (video.videoHeight/video.videoWidth)*window.innerWidth/2;
+            contextVideo.translate(canvasVideo.width, 0);
+            contextVideo.scale(-1, 1);
         }, 200);
 
         stream.onended = function () {
@@ -78,12 +80,12 @@ function errorMsg(msg, error) {
 
 var canvasVideo = document.getElementById("canvas-video");
 canvasVideo.width = window.innerWidth/2;
-canvasVideo.height = window.innerHeight/3;
+canvasVideo.height = window.innerHeight/2;
 var contextVideo = canvasVideo.getContext('2d');
 
 // mirror video
-contextVideo.translate(canvasVideo.width, 0);
-contextVideo.scale(-1, 1);
+canvasVideo.translate(canvasVideo.width, 0);
+canvasVideo.scale(-1, 1);
 var c = 5;
 
 
@@ -149,7 +151,7 @@ window.requestAnimFrame = (function () {
 
 
 function drawVideo() {
-    contextVideo.drawImage(video,0 , 0, window.innerWidth/2,video.videoHeight/video.videoWidth*window.innerWidth/2);//, 200,200);//canvasVideo.width, canvasVideo.height);//video.width, video.height);
+    contextVideo.drawImage(video,0 , 0, window.innerWidth/2,(video.videoHeight/video.videoWidth)*window.innerWidth/2);//, 200,200);//canvasVideo.width, canvasVideo.height);//video.width, video.height);
     videoTexture = PIXI.Texture.fromCanvas(canvasVideo);
     videoFrame.loadTexture(videoTexture);
 }

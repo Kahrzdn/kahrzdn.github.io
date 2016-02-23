@@ -44,6 +44,7 @@ nav(constraints)
         setTimeout(function(){
             canvasVideo.width = window.innerWidth/2;
             canvasVideo.height = (video.videoHeight/video.videoWidth)*window.innerWidth/2;
+            var contextVideo = canvasVideo.getContext('2d');
             contextVideo.translate(canvasVideo.width, 0);
             contextVideo.scale(-1, 1);
         }, 200);
@@ -84,8 +85,9 @@ canvasVideo.height = window.innerHeight/2;
 var contextVideo = canvasVideo.getContext('2d');
 
 // mirror video
-canvasVideo.translate(canvasVideo.width, 0);
-canvasVideo.scale(-1, 1);
+
+//contextVideo.translate(canvasVideo.width, 0);
+//contextVideo.scale(-1, 1);
 var c = 5;
 
 

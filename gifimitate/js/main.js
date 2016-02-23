@@ -47,7 +47,7 @@ nav(constraints)
             var contextVideo = canvasVideo.getContext('2d');
             contextVideo.translate(canvasVideo.width, 0);
             contextVideo.scale(-1, 1);
-        }, 200);
+        }, 1000);
 
         stream.onended = function () {
             console.log('Stream ended');

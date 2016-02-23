@@ -20,13 +20,8 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS,
     update: update
 });
 
-var emitter;
 var videoFrame;
 var videoTexture;
-
-var fingerNum = 35;
-
-
 
 function create() {
     videoFrame = game.add.sprite(0, 0);
@@ -101,13 +96,14 @@ function initialize() {
 function start() {
 }
 
+var dlName = "dance.gif";
 var sup1;
 var encoder;
 
 function handleFiles() {
     var selectedFile = document.getElementById('file-upload').files[0];
         var reader = new FileReader();
-
+        dlName = selectedFile.name;
         reader.onload = function (e) {
             $( ".jsgif" ).remove();
 
@@ -145,6 +141,8 @@ function recordGifEnd() {
     encoder.finish();
     document.getElementById('gifimage').src = 'data:image/gif;base64,'+encode64(encoder.stream().getData());
     document.getElementById('giflink').href = 'data:image/gif;base64,'+encode64(encoder.stream().getData());
+    document.getElementById('giflink').download = dlName;
+    sup1.play();
 }
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||

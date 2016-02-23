@@ -62,9 +62,17 @@
 </label>
 
 <input type="file" id="file-upload" onchange="handleFiles(this.files)" accept="image/gif"/>
-<div class="sourcegif">
-    <img id="blah" src="./dance.gif"/>
+<div style="width: 100%; overflow: hidden;">
+    <div class="sourcegif" style="float: left;">
+        <img id="blah" src="./dance.gif"/>
+    </div>
+    <div style="float: right;">
+        <a id="giflink" download="YourFileName.gif" href="data:image/gif;">
+            <img id="gifimage">
+        </a>
+    </div>
 </div>
+
 <script src="js/lib/libgif.js"></script>
 <script src="js/lib/rubbable.js"></script>
 <script src="js/lib/jsgif/b64.js"></script>
@@ -100,9 +108,7 @@
 
     <canvas id="canvas-video" hidden>
     </canvas>
-    <a id="giflink" download="YourFileName.gif" href="data:image/gif;">
-        <img id="gifimage">
-    </a>
+
     <button class="pure-button" onclick="recordGifStart();">Start</button>
     <button class="pure-button" onclick="recordFrame();">Next frame</button>
     <button class="pure-button" onclick="recordGifEnd();">Finish</button>

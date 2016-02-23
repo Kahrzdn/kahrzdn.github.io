@@ -41,10 +41,10 @@ nav(constraints)
         var videoTracks = stream.getVideoTracks();
         console.log('Got stream with constraints:', constraints);
         console.log('Using video device: ' + videoTracks[0].label);
-        //setTimeout(function(){
-        //    canvasVideo.width = video.videoWidth;
-        //    canvasVideo.height = video.videoHeight;
-        //}, 200);
+        setTimeout(function(){
+            canvasVideo.width = window.innerWidth/2;
+            canvasVideo.height = video.videoHeight/video.videoWidth*window.innerWidth/2;
+        }, 200);
 
         stream.onended = function () {
             console.log('Stream ended');

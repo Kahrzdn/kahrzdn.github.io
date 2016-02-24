@@ -57,19 +57,26 @@
 
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<div style="width: 100%; overflow: hidden;">
+    <div class="sourcegif"  style="width:50%; float: left; vertical-align: top;">
 <label for="file-upload" class="pure-button">
     <i class="fa fa-cloud-upload"></i> Upload another GIF to imitate
 </label>
 
 <input type="file" id="file-upload" onchange="handleFiles(this.files)" accept="image/gif"/>
-<div style="width: 100%; overflow: hidden;">
-    <div class="sourcegif"  style="width:50%; float: left;">
+
         <img id="blah" src="./dance.gif"/ >
     </div>
-    <div style="width:50% float: right;">
-        <a id="giflink" download="YourFileName.gif" href="data:image/gif;">
+    <div style="width:50% float: right; vertical-align: top;">
+
+
+        <a id="giflink" title="Get Help" download="YourFileName.gif" href="data:image/gif;">
+            <button class="pure-button" id="downloadinfo" />
+            click to download
+            </button>
             <img id="gifimage">
         </a>
+
     </div>
 </div>
 
@@ -109,9 +116,9 @@
     <canvas id="canvas-video" hidden>
     </canvas>
 
-    <button class="pure-button" onclick="recordGifStart();">Start</button>
-    <button class="pure-button" onclick="recordFrame();">Next frame</button>
-    <button class="pure-button" onclick="recordGifEnd();">Finish</button>
+    <button class="pure-button" id="start" onclick="recordGifStart();">Start</button>
+    <button class="pure-button" id="next" onclick="recordFrame();">Next frame</button>
+    <button class="pure-button" id="finish" onclick="recordGifEnd();">Finish</button>
 
 </div>
 

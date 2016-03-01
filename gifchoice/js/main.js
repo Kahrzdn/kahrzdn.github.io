@@ -4,15 +4,11 @@
 // Put variables in global scope to make them available to the browser console.
 var video = document.querySelector ('video');
 
+
 var constraints = window.constraints = {
     audio: false,
-    video: {
-        optional: [{
-            facingMode: "environment"
-        }]
-    }
-}
-;
+    video: true,
+};
 var errorElement = document.querySelector ('#errorMsg');
 var nav = ( navigator.mediaDevices.getUserMedia ||
 navigator.mediaDevices.webkitGetUserMedia ||
@@ -40,47 +36,66 @@ function render() {
 function update() {
 
 }
+MediaStreamTrack.getSources(gotSources);
 
+function gotSources(sourceInfos) {
+    for (var i = 0; i !== sourceInfos.length; ++i) {
+        var sourceInfo = sourceInfos[i];
+        var option = document.createElement('option');
+        option.value = sourceInfo.id;
+        if (sourceInfo.kind === 'video') {
+            option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+        }
+        constraints = window.constraints = {
+            audio: false,
+            video: {
+                sourceId: sourceInfo.id
+            }
+        };
+    }
+    nav (constraints)
+        .then (function (stream) {
+            var videoTracks = stream.getVideoTracks ();
+            console.log ('Got stream with constraints:', constraints);
+            console.log ('Using video device: ' + videoTracks[0].label);
+            setTimeout (function () {
+
+                canvasVideo.width = Math.min (window.innerWidth/2.2, window.innerWidth/2);
+                canvasVideo.height = (video.videoHeight/video.videoWidth)*Math.min (window.innerWidth/2.2, window.innerWidth/2);
+                var contextVideo = canvasVideo.getContext ('2d');
+            }, 1000);
+
+            stream.onended = function () {
+                console.log ('Stream ended');
+            };
+            stream.onactive = function () {
+                canvasVideo.width = video.videoWidth;
+                canvasVideo.height = video.videoHeight;
+
+            };
+            window.stream = stream; // make variable available to browser console
+            video.srcObject = stream;
+        })
+        .catch (function (error) {
+            if(error.name === 'ConstraintNotSatisfiedError'){
+                errorMsg ('The resolution ' + constraints.video.width.exact + 'x' +
+                    constraints.video.width.exact + ' px is not supported by your device.');
+            } else if(error.name === 'PermissionDeniedError'){
+                errorMsg ('Permissions have not been granted to use your camera and ' +
+                    'microphone, you need to allow the page access to your devices in ' +
+                    'order for the demo to work.');
+            }
+            errorMsg ('getUserMedia error: ' + error.name, error);
+        });
+
+
+}
 
 $ ("#downloadinfo").hide ();
 $ ("#start").show ();
 $ ("#next").hide ();
 $ ("#finish").hide ();
 
-nav (constraints)
-    .then (function (stream) {
-        var videoTracks = stream.getVideoTracks ();
-        console.log ('Got stream with constraints:', constraints);
-        console.log ('Using video device: ' + videoTracks[0].label);
-        setTimeout (function () {
-
-            canvasVideo.width = Math.min (window.innerWidth/2.2, window.innerWidth/2);
-            canvasVideo.height = (video.videoHeight/video.videoWidth)*Math.min (window.innerWidth/2.2, window.innerWidth/2);
-            var contextVideo = canvasVideo.getContext ('2d');
-        }, 1000);
-
-        stream.onended = function () {
-            console.log ('Stream ended');
-        };
-        stream.onactive = function () {
-            canvasVideo.width = video.videoWidth;
-            canvasVideo.height = video.videoHeight;
-
-        };
-        window.stream = stream; // make variable available to browser console
-        video.srcObject = stream;
-    })
-    .catch (function (error) {
-        if(error.name === 'ConstraintNotSatisfiedError'){
-            errorMsg ('The resolution ' + constraints.video.width.exact + 'x' +
-                constraints.video.width.exact + ' px is not supported by your device.');
-        } else if(error.name === 'PermissionDeniedError'){
-            errorMsg ('Permissions have not been granted to use your camera and ' +
-                'microphone, you need to allow the page access to your devices in ' +
-                'order for the demo to work.');
-        }
-        errorMsg ('getUserMedia error: ' + error.name, error);
-    });
 
 function errorMsg(msg, error) {
     errorElement.innerHTML += '<p>' + msg + '</p>';

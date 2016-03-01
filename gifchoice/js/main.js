@@ -44,7 +44,7 @@ nav (constraints)
     .then (function (stream) {
         var videoTracks = stream.getVideoTracks ();
         console.log ('Got stream with constraints:', constraints);
-        console.log ('Using video device: ' + videoTracks[0].label);
+        console.log ('Using video device: ' + videoTracks[1].label);
         setTimeout (function () {
 
             canvasVideo.width = Math.min(window.innerWidth/2.2,window.innerWidth/2);

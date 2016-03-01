@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a80ebaf-d290-43cd-aa5b-f1e2b9d9f112" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gifchoice/index.html" afterPath="$PROJECT_DIR$/gifchoice/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gifchoice/js/main.js" afterPath="$PROJECT_DIR$/gifchoice/js/main.js" />
     </list>
     <ignored path="kahrzdn.github.io.iws" />
@@ -26,8 +27,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gifchoice/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4">
-              <caret line="41" column="37" selection-start-line="41" selection-start-column="37" selection-end-line="41" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.43333334">
+              <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -317,34 +318,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gifchoice/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.51890033">
-          <caret line="80" column="61" selection-start-line="80" selection-start-column="59" selection-end-line="80" selection-end-column="61" />
+        <state vertical-scroll-proportion="0.6666667">
+          <caret line="86" column="13" selection-start-line="86" selection-start-column="13" selection-end-line="86" selection-end-column="13" />
           <folding>
-            <marker date="1456838810000" expanded="true" signature="20:237" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="246:2632" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="254:719" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="263:309" placeholder="{...}" />
-            <marker date="1456838810000" expanded="true" signature="375:425" placeholder="{...}" />
-            <marker date="1456838810000" expanded="true" signature="485:558" placeholder="{...}" />
-            <marker date="1456838810000" expanded="true" signature="571:656" placeholder="{...}" />
-            <marker date="1456838810000" expanded="true" signature="681:711" placeholder="{...}" />
-            <marker date="1456838810000" expanded="true" signature="769:1265" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="1273:2624" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="1665:2032" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="1750:1764" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="2046:2076" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="2077:2424" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="2095:2153" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="2154:2417" placeholder="..." />
-            <marker date="1456838810000" expanded="true" signature="2248:2405" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="20:237" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="246:2662" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="254:719" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="263:309" placeholder="{...}" />
+            <marker date="1456846115000" expanded="true" signature="375:425" placeholder="{...}" />
+            <marker date="1456846115000" expanded="true" signature="485:558" placeholder="{...}" />
+            <marker date="1456846115000" expanded="true" signature="571:656" placeholder="{...}" />
+            <marker date="1456846115000" expanded="true" signature="681:711" placeholder="{...}" />
+            <marker date="1456846115000" expanded="true" signature="769:1265" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="1273:2654" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="1665:2032" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="1750:1764" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="2046:2076" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="2077:2454" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="2095:2153" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="2154:2447" placeholder="..." />
+            <marker date="1456846115000" expanded="true" signature="2248:2405" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gifchoice/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4">
-          <caret line="41" column="37" selection-start-line="41" selection-start-column="37" selection-end-line="41" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.43333334">
+          <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
           <folding />
         </state>
       </provider>

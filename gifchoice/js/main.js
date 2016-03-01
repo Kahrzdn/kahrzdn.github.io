@@ -39,13 +39,16 @@ function update() {
 MediaStreamTrack.getSources(gotSources);
 
 function gotSources(sourceInfos) {
+    $('#debug').text("test2");
     for (var i = sourceInfos.length-1; i>=0; i--) {
         var sourceInfo = sourceInfos[i];
         var option = document.createElement('option');
         option.value = sourceInfo.id;
         if (sourceInfo.kind === 'video') {
             option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+            $("#debug").text(sourceInfo.label);
         }
+
         constraints = window.constraints = {
             audio: false,
             video: {

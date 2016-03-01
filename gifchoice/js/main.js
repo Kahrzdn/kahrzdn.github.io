@@ -3,10 +3,17 @@
 
 // Put variables in global scope to make them available to the browser console.
 var video = document.querySelector ('video');
+
 var constraints = window.constraints = {
     audio: false,
-    video: true
-};
+    video: {
+        optional: [{
+            sourceId: "camera 2"
+        }]
+    }
+}
+}
+;
 var errorElement = document.querySelector ('#errorMsg');
 var nav = ( navigator.mediaDevices.getUserMedia ||
 navigator.mediaDevices.webkitGetUserMedia ||
@@ -35,7 +42,8 @@ function update() {
 
 }
 
-$("#downloadinfo").hide();
+
+$ ("#downloadinfo").hide ();
 $ ("#start").show ();
 $ ("#next").hide ();
 $ ("#finish").hide ();
@@ -47,8 +55,8 @@ nav (constraints)
         console.log ('Using video device: ' + videoTracks[0].label);
         setTimeout (function () {
 
-            canvasVideo.width = Math.min(window.innerWidth/2.2,window.innerWidth/2);
-            canvasVideo.height = (video.videoHeight/video.videoWidth)*Math.min(window.innerWidth/2.2,window.innerWidth/2);
+            canvasVideo.width = Math.min (window.innerWidth/2.2, window.innerWidth/2);
+            canvasVideo.height = (video.videoHeight/video.videoWidth)*Math.min (window.innerWidth/2.2, window.innerWidth/2);
             var contextVideo = canvasVideo.getContext ('2d');
         }, 1000);
 
@@ -138,7 +146,7 @@ function recordFrame() {
 function recordGifEnd() {
     encoder.finish ();
     document.getElementById ('gifimage').src
-    $("#downloadinfo").show();
+    $ ("#downloadinfo").show ();
     document.getElementById ('gifimage').src = 'data:image/gif;base64,' + encode64 (encoder.stream ().getData ());
     document.getElementById ('giflink').href = 'data:image/gif;base64,' + encode64 (encoder.stream ().getData ());
     document.getElementById ('giflink').download = dlName;

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a80ebaf-d290-43cd-aa5b-f1e2b9d9f112" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gifchoice/index.html" afterPath="$PROJECT_DIR$/gifchoice/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gifchoice/js/main.js" afterPath="$PROJECT_DIR$/gifchoice/js/main.js" />
     </list>
     <ignored path="kahrzdn.github.io.iws" />
@@ -27,8 +26,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gifchoice/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43333334">
-              <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.4">
+              <caret line="46" column="94" selection-start-line="46" selection-start-column="94" selection-end-line="46" selection-end-column="94" />
               <folding />
             </state>
           </provider>
@@ -344,8 +343,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gifchoice/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43333334">
-          <caret line="48" column="29" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.4">
+          <caret line="46" column="94" selection-start-line="46" selection-start-column="94" selection-end-line="46" selection-end-column="94" />
           <folding />
         </state>
       </provider>

@@ -44,17 +44,18 @@ function gotSources(sourceInfos) {
         var sourceInfo = sourceInfos[i];
         var option = document.createElement('option');
         option.value = sourceInfo.id;
-        if (sourceInfo.kind === 'video') {
+        if (sourceInfo.kind === 'video' && sourceInfo.label.substr(sourceInfo.label.length - 4)=="back") {
             option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
             $("#debug").text(sourceInfo.label);
+            constraints = window.constraints = {
+                audio: false,
+                video: {
+                    sourceId: sourceInfo.id
+                }
+            };
         }
 
-        constraints = window.constraints = {
-            audio: false,
-            video: {
-                sourceId: sourceInfo.id
-            }
-        };
+
     }
     nav (constraints)
         .then (function (stream) {

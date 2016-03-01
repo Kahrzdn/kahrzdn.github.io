@@ -8,7 +8,7 @@ var constraints = window.constraints = {
     audio: false,
     video: {
         optional: [{
-            sourceId: "camera 2"
+            facingMode: "environment"
         }]
     }
 }

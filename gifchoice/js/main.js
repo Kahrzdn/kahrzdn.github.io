@@ -39,7 +39,7 @@ function update() {
 MediaStreamTrack.getSources(gotSources);
 
 function gotSources(sourceInfos) {
-    for (var i = 0; i !== sourceInfos.length; ++i) {
+    for (var i = sourceInfos.length-1; i>=0; i--) {
         var sourceInfo = sourceInfos[i];
         var option = document.createElement('option');
         option.value = sourceInfo.id;

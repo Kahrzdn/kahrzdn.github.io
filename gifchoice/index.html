@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* to remove the top and left whitespace */
+
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* just to be sure these are full screen*/
+
+    video {
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+
+    button {
+        padding: 10px 15px;
+        background: #4479BA;
+        color: #FFF;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" href="buttons.css">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+
+    <title>GIFchoice Maker</title>
+
+</head>
+
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+<script src="js/lib/libgif.js"></script>
+<script src="js/lib/rubbable.js"></script>
+<script src="js/lib/jsgif/b64.js"></script>
+<script src="js/lib/jsgif/LZWEncoder.js"></script>
+<script src="js/lib/jsgif/NeuQuant.js"></script>
+<script src="js/lib/jsgif/GIFEncoder.js"></script>
+
+<div id="container">
+    <video id="video" autoplay hidden></video>
+    <canvas id="canvas-video" hidden>
+    </canvas>
+
+    <button class="pure-button" id="start" onclick="recordGifStart();">Start</button>
+    <button class="pure-button" id="next" onclick="recordFrame();">Next frame</button>
+    <button class="pure-button" id="finish" onclick="recordGifEnd();">Finish</button>
+
+</div>
+<div style="width: 100%; overflow: hidden;">
+    <div style="width:50% height:50% float: right; vertical-align: bottom;">
+
+        <a id="giflink" title="Get Help" download="YourFileName.gif" href="data:image/gif;">
+            <button class="pure-button" id="downloadinfo"/>
+            click to download
+            </button>
+            <img id="gifimage">
+        </a>
+
+    </div>
+</div>
+
+
+<script src="js/lib/phaser.js"></script>
+<script src="js/adapter.js"></script>
+<script src="js/common.js"></script>
+<script src="js/main.js"></script>
+<script src="js/lib/ga.js"></script>
+
+
+</body>
+</html>
+
+

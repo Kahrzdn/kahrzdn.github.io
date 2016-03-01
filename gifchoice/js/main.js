@@ -12,7 +12,6 @@ var constraints = window.constraints = {
         }]
     }
 }
-}
 ;
 var errorElement = document.querySelector ('#errorMsg');
 var nav = ( navigator.mediaDevices.getUserMedia ||

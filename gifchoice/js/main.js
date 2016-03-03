@@ -15,7 +15,7 @@ navigator.mediaDevices.webkitGetUserMedia ||
 navigator.mediaDevices.mozGetUserMedia ||
 navigator.mediaDevices.msGetUserMedia);
 
-var game = new Phaser.Game (window.innerWidth/2, window.innerHeight/2, Phaser.CANVAS, 'phaser', {
+var game = new Phaser.Game (window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser', {
 
     create: create,
     render: render,

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a80ebaf-d290-43cd-aa5b-f1e2b9d9f112" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gifchoice/js/main.js" afterPath="$PROJECT_DIR$/gifchoice/js/main.js" />
-    </list>
+    <list default="true" id="2a80ebaf-d290-43cd-aa5b-f1e2b9d9f112" name="Default" comment="" />
     <ignored path="kahrzdn.github.io.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

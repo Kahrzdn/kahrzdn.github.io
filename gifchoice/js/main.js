@@ -119,7 +119,6 @@ var contextVideo = canvasVideo.getContext ('2d');
 //contextVideo.scale(-1, 1);
 var c = 5;
 
-
 var dlName = "GIFchoice.gif";
 var encoder;
 

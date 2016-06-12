@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Tabs - Vertical Tabs functionality</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/dark-hive/jquery-ui.css">
+
+    <script src="js/lib/socket.io.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        $ (function () {
+            $ ("#tabs").tabs ().addClass ("ui-tabs-vertical ui-helper-clearfix");
+            $ ("#tabs li").removeClass ("ui-corner-top").addClass ("ui-corner-left");
+        });
+    </script>
+    <style>
+        .ui-tabs-vertical {
+            width: 100%;
+        }
+
+        .ui-tabs-vertical .ui-tabs-nav {
+            padding: .2em .1em .2em .2em;
+            float: left;
+            width: 27%;
+        }
+
+        .ui-tabs-vertical .ui-tabs-nav li {
+            clear: left;
+            width: 100%;
+            border-bottom-width: 1px !important;
+            border-right-width: 0 !important;
+            margin: 0 -1px .2em 0;
+        }
+
+        .ui-tabs-vertical .ui-tabs-nav li a {
+            display: block;
+        }
+
+        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+            padding-bottom: 0;
+            padding-right: .1em;
+            border-right-width: 1px;
+        }
+
+        .ui-tabs-vertical .ui-tabs-panel {
+            padding: 0em 0em 0em 0em;
+            float: right;
+            width: 70%;
+            height: 100%
+        }
+
+        body {
+            margin: 0; /* This is used to reset any browser-default margins */
+            height: 100vh; /* This is needed to overcome a Chrome bug. */
+            width: 100vw; /* As above. */
+        }
+
+        iframe {
+            height: 100vh;
+            width: 100%;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+  <video id="localVideo" autoplay muted></video>
+      <video id="remoteVideo" autoplay></video>
+
+<div id="tabs" height=100%>
+    <ul>
+
+        <li><a href="#tabs-1">Buddy1</a></li>
+        <li><a href="#tabs-2">Buddy2</a></li>
+        <li><a href="#tabs-3">Buddy3</a></li>
+    </ul>
+    <div id="tabs-1">
+        <div style="width:100%; background-color:#fff">
+            <input type="image" name="Buddy1InputR" src="assets/xlink.png"
+                   style="background-color:#fff; height:1em; width:1em; padding:.1em;" ></input>
+            <input type="text" name="Buddy1Input" id="Buddy1Link" style="width:calc(100% - 2em)" value="http://fokus.dn.se/edward-snowden-english/"/>
+        </div>
+        <iframe sandbox="allow-top-navigation allow-same-origin allow-scripts allow-forms" id="Buddy1Frame" src=""></iframe>
+    </div>
+    <div id="tabs-2">
+        <div style="width:100%; background-color:#fff">
+            <input type="image" name="Buddy2InputR" src="assets/xlink.png"
+                   style="background-color:#fff; height:1em; width:1em; padding:.1em;" ></input>
+            <input type="text" name="Buddy2Input" id="Buddy2Link" style="width:calc(100% - 2em)" value="http://comashell.dk"/>
+        </div>
+        <iframe sandbox="allow-top-navigation allow-same-origin allow-scripts" id="Buddy2Frame" src="" onload="load" onerror="error" ></iframe>
+    </div>
+    <div id="tabs-3">
+        <div style="width:100%; background-color:#fff">
+            <input type="image" name="Buddy3InputR" src="assets/xlink.png"
+                   style="background-color:#fff; height:1em; width:1em; padding:.1em;"></input>
+            <input type="text" name="Buddy3Input" id="Buddy3Link" style="width:calc(100% - 2em)" value="http://comashell.dk"/>
+        </div>
+        <iframe sandbox="allow-top-navigation" id="Buddy3Frame" src=""></iframe>
+    </div>
+</div>
+<script>
+    var socket = io.connect ('http://188.226.245.176:8001');
+
+    $ ('input[name=Buddy1Input]').change (function () {
+        var URL = updateURL ("Buddy1");
+        sendLink ("Buddy1", URL);
+    });
+
+    $ ('input[name=Buddy2Input]').change (function () {
+        var URL = updateURL ("Buddy2");
+        sendLink ("Buddy2", URL);
+    });
+
+    $ ('input[name=Buddy3Input]').change (function () {
+        var URL = updateURL ("Buddy3");
+        sendLink ("Buddy3", URL);
+    });
+
+    $ ('input[name=Buddy1InputR]').click (function () {
+        var URL = $ ("#" + "Buddy1" + "Link").val ();
+        var win = window.open (URL, '_blank');
+        win.focus ();
+    });
+    $ ('input[name=Buddy2InputR]').click (function () {
+        var URL = $ ("#" + "Buddy2" + "Link").val ();
+        var win = window.open (URL, '_blank');
+        win.focus ();
+    });
+    $ ('input[name=Buddy3InputR]').click (function () {
+        var URL = $ ("#" + "Buddy3" + "Link").val ();
+        var win = window.open (URL, '_blank');
+        win.focus ();
+    });
+
+    var iframeError;
+
+    function updateURL(buddyId) {
+        var URL = $ ("#" + buddyId + "Link").val ();
+        $ ('#' + buddyId + 'Frame').attr ('src', URL);
+        iframeError = setTimeout(error, 5000);
+        load("started "+URL);
+
+        return URL;
+    }
+
+    updateURL ("Buddy3");
+    updateURL ("Buddy2");
+    updateURL ("Buddy1");
+
+    function sendLink(buddyId, url) {
+        console.log ("sending link");
+        socket.emit ('sendLink', {
+            'buddyid': buddyId,
+            'url': url
+        });
+    }
+    //receive
+    socket.on ('sendLink', function (data) {
+        console.log ("receiving link");
+        var buddyId = data.buddyid;
+        var URL = data.url;
+        $ ("#" + buddyId + "Link").val (URL);
+        updateURL (buddyId);
+    });
+
+
+    function load(e) {
+        console.log(e);
+    }
+
+    function error() {
+        console.log('error');
+    }
+
+    $(document).ready(function () {
+        $('#Buddy1Frame').on('load', (function () {
+            load("loaded 1");
+            clearTimeout(iframeError);
+        }));
+        $('#Buddy2Frame').on('load', (function () {
+            load("loaded 2");
+            clearTimeout(iframeError);
+        }));
+        $('#Buddy3Frame').on('load', (function () {
+            load("loaded 3");
+            clearTimeout(iframeError);
+        }));
+
+    });
+
+</script>
+<script src="js/adapter.js"></script>
+ <script src="js/common.js"></script>
+ <script src="js/main.js"></script>
+ <script src="js/lib/ga.js"></script>
+
+</body>
+</html>

@@ -96,3 +96,7 @@ function touchEnded() {
   }
   laneDY=0;
 } 
+
+document.ontouchmove = function(event) {
+  event.preventDefault();
+};

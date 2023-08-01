@@ -17,9 +17,9 @@ const colorMap = [
 var levels = [{
   lanes:
     [[0, 3, 4, 1, 2, 0, 1],
-    [0, 1, 1, 2, 3, 1, 1],
+    [0, 1, 1, 2, 3, 3, 1],
     [2, 3, 4, 1, 2, 4, 2],
-    [0, 1, 2, 3, 4, 2, 1],
+    [0, 1, 3, 3, 4, 3, 1],
     [0, 1, 2, 3, 4, 2, 1]
     ]
 
@@ -61,7 +61,7 @@ function drawBrick(px, py, dy, colNum) {
   col = colorMap[colNum];
   noStroke();
   fill(col);
-  rect(px * wdx, py * wdy + dy, wdx - 2, wdy - 2);
+  rect(px * wdx + 1, py * wdy + dy + 1, wdx - 2, wdy - 2);
 }
 
 function draw() {
@@ -131,7 +131,5 @@ function mousePressed(event) {
 }*/
 
 document.ontouchmove = function (event) {
-  let fs = fullscreen();
-  fullscreen(!fs);
   event.preventDefault();
 };

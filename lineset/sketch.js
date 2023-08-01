@@ -54,11 +54,11 @@ function drawBrick(px, py, dy, colNum) {
   col = colorMap[colNum];
   noStroke();
   fill(col);
-  rect(px * wdx, py * wdy + dy, wdx, wdy);
+  rect(px * wdx, py * wdy + dy, wdx - 2, wdy - 2);
 }
 
 function draw() {
-  background(0);
+  background(255);
   drawLevel(levels[currentLevel])
 }
 

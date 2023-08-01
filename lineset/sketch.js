@@ -16,12 +16,14 @@ const colorMap = [
 
 var levels = [{
   lanes:
+
     [[0, 3, 4, 1, 2, 0, 1],
     [0, 1, 1, 2, 3, 3, 1],
     [2, 3, 4, 1, 2, 4, 2],
     [0, 1, 3, 3, 4, 3, 1],
     [0, 1, 2, 3, 4, 2, 1]
     ]
+
 
 },
 {
@@ -38,7 +40,37 @@ var wdy;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  levels[0] = createLevel(5, 5, 40);
 }
+
+function createLevel(numRow, numLanes, complexity) {
+  var lanes = [];
+  for (var i = 0; i < numRow; i++) {
+    var lane = [];
+
+    if (random(100) > complexity) {
+      //mono
+      lane = Array(numLanes).fill(floor(random(numLanes)))
+    }
+    else {
+      lane = shuffle([...Array(numLanes).keys()]);
+    }
+    lanes.push(lane);
+  }
+  //  transpose lanes;
+  lanes = lanes.reduce((prev, next) =>
+    next.map((item, i) =>
+      (prev[i] || []).concat(next[i])
+    ), []);
+  for (var i = 0; i < lanes.length; i++) {
+    lanes[i] = arrayRotateNum(lanes[i], floor(random(lanes[i].length)));
+  }
+  return { lanes: lanes };
+}
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+};
 
 function drawLevel(level) {
   wdx = windowWidth / level.lanes.length;
@@ -57,15 +89,15 @@ function drawLane(place, dy, lane) {
   }
 }
 
-function drawBrick(px, py, dy, colNum) {
-  col = colorMap[colNum];
+function drawBrick(px, py, dy, colorNum) {
+  col = color(colorMap[colorNum]);
   noStroke();
   fill(col);
-  rect(px * wdx + 1, py * wdy + dy + 1, wdx - 2, wdy - 2);
+  rect(px * wdx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
 }
 
 function draw() {
-  background(255);
+  background(245);
   drawLevel(levels[currentLevel])
 }
 
@@ -75,6 +107,14 @@ function windowResized() {
 }
 
 var mousepos = { x: -1, y: -1 }
+
+function arrayRotateNum(arr, num) {
+  for (var i = 0; i < num; i++) {
+    arr = arrayRotate(arr, false);
+  }
+  return arr;
+}
+
 function arrayRotate(arr, reverse) {
   if (reverse) arr.unshift(arr.pop());
   else arr.push(arr.shift());
@@ -94,6 +134,13 @@ function touchStarted() {
 function touchMoved() {
   laneDY = mouseY - mousepos.y;
   lanePos = floor(mousepos.x / wdx);
+  const deltaY = round((mouseY - mousepos.y) / wdy);
+
+  console.log("dssd" + lanePos)
+  if (deltaY == 0)
+    return;
+
+
 }
 
 function touchEnded() {

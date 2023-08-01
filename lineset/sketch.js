@@ -3,8 +3,7 @@ const colorMap = [
   "#be1e2d",
   "#ffde17",
   "#ffffff",
-  "#21409a"
-/* rainbow
+  "#21409a",
   "#ff0000",
   "#ffa500",
   "#ffff00",
@@ -12,7 +11,7 @@ const colorMap = [
   "#0000ff",
   "#4b0082",
   "#ee82ee"
- */]
+]
 
 var levels = [{
   lanes:
@@ -40,10 +39,11 @@ var wdy;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  levels[0] = createLevel(5, 5, 40);
+  levels[0] = createLevel(3 + floor(random(5)), 3 + floor(random(7)), 30 + floor(random(70)));
 }
 
 function createLevel(numRow, numLanes, complexity) {
+  console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
     var lane = [];
@@ -128,7 +128,7 @@ function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
   let fs = fullscreen();
-  if (!fs) fullscreen(!fs);
+  // if (!fs) fullscreen(!fs);
 }
 
 function touchMoved() {

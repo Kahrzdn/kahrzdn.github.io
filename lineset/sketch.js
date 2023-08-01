@@ -65,7 +65,7 @@ function createLevel(numRow, numLanes, complexity) {
   for (var i = 0; i < lanes.length; i++) {
     lanes[i] = arrayRotateNum(lanes[i], floor(random(lanes[i].length)));
   }
-  return { lanes: lanes };
+  return { lanes: lanes, checkRows: Array(numRow).fill(false) };
 }
 
 function shuffle(array) {
@@ -77,21 +77,26 @@ function drawLevel(level) {
   wdy = windowHeight / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePos == i)
-      drawLane(i, laneDY, level.lanes[i])
+      drawLane(i, laneDY, level.lanes[i], level.checkRows)
     else
-      drawLane(i, 0, level.lanes[i]);
+      drawLane(i, 0, level.lanes[i], level.checkRows);
   }
 }
 
-function drawLane(place, dy, lane) {
+function drawLane(place, dy, lane, checkRows) {
   for (var i = 0; i < lane.length; i++) {
-    drawBrick(place, i, dy, lane[i]);
+    console.log(checkRows[i]);
+    drawBrick(place, i, dy, lane[i], checkRows[i]);
   }
 }
 
-function drawBrick(px, py, dy, colorNum) {
+function drawBrick(px, py, dy, colorNum, check) {
   col = color(colorMap[colorNum]);
   noStroke();
+  if (check) {
+    fill(sin(py + -px / 4 + frameCount / 10) * 128 + 128);
+    rect(px * wdx, py * wdy + dy, wdx, wdy);
+  }
   fill(col);
   rect(px * wdx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
 }
@@ -122,7 +127,23 @@ function arrayRotate(arr, reverse) {
 }
 
 function checkLanes(level) {
-
+  var lanes = level.lanes;
+  var doneCheck = true;
+  for (var i = 0; i < lanes[0].length; i++) {
+    var checkRow = Array(lanes.length).fill(0);
+    for (var j = 0; j < lanes.length; j++) {
+      checkRow[lanes[j][i]]++;
+    }
+    check = true;
+    for (var j = 0; j < lanes.length; j++) {
+      if (![0, 1, lanes.length].includes(checkRow[j])) {
+        check = false;
+      }
+    }
+    level.checkRows[i] = check;
+    doneCheck = doneCheck & check;
+  }
+  level.done = doneCheck;
 }
 
 
@@ -149,6 +170,10 @@ function touchMoved() {
 }
 
 function touchEnded() {
+  if (levels[currentLevel].done) {
+    levels[currentLevel] = createLevel(3 + floor(random(5)), 3 + floor(random(7)), 30 + floor(random(70)));
+    return;
+  }
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
   console.log("dssd" + lanePos)

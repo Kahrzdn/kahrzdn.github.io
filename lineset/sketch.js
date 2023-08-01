@@ -80,6 +80,8 @@ var lanePos = 0;
 function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
+  let fs = fullscreen();
+  if (!fs) fullscreen(!fs);
 }
 
 function touchMoved() {
@@ -112,6 +114,17 @@ function touchHandler(event) {
   }
 }
 
+/*
+function mousePressed(event) {
+  if (mouseX > 0 && mouseX < 10 && mouseY > 0 && mouseY < 10) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+  }
+  return false;
+}*/
+
 document.ontouchmove = function (event) {
+  let fs = fullscreen();
+  fullscreen(!fs);
   event.preventDefault();
 };

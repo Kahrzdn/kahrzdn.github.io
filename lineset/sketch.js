@@ -121,6 +121,11 @@ function arrayRotate(arr, reverse) {
   return arr;
 }
 
+function checkLanes(level) {
+
+}
+
+
 var laneDY = 0;
 var lanePos = 0;
 
@@ -128,7 +133,7 @@ function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
   let fs = fullscreen();
-  // if (!fs) fullscreen(!fs);
+  if (!fs) fullscreen(!fs);
 }
 
 function touchMoved() {
@@ -158,6 +163,7 @@ function touchEnded() {
     }
   }
   laneDY = 0;
+  checkLanes(levels[currentLevel]);
 }
 
 function touchHandler(event) {

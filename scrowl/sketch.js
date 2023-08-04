@@ -39,7 +39,10 @@ var wdy;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  levels[0] = createLevel(3 + floor(random(0)), 3 + floor(random(0)), 30 + floor(random(70)));
+  let fs = fullscreen();
+  if (!fs) fullscreen(true);
+  var r = floor(random(6));
+  levels[0] = createLevel(3 + r, 3 + (6 - r), 30 + floor(random(70)));
 }
 
 function createLevel(numRow, numLanes, complexity) {
@@ -107,7 +110,7 @@ function draw() {
 }
 
 function windowResized() {
-  // resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth, windowHeight);
 
 }
 
@@ -171,7 +174,9 @@ function touchMoved() {
 
 function touchEnded() {
   if (levels[currentLevel].done) {
-    levels[currentLevel] = createLevel(3 + floor(random(5)), 3 + floor(random(7)), 30 + floor(random(70)));
+    var r = floor(random(8));
+    levels[currentLevel] = createLevel(3 + r, 3 + (8 - r), 30 + floor(random(70)));
+
     return;
   }
   const deltaY = round((mouseY - mousepos.y) / wdy);

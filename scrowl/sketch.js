@@ -39,7 +39,7 @@ var wdy;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  levels[0] = createLevel(3 + floor(random(5)), 3 + floor(random(7)), 30 + floor(random(70)));
+  levels[0] = createLevel(3 + floor(random(0)), 3 + floor(random(0)), 30 + floor(random(70)));
 }
 
 function createLevel(numRow, numLanes, complexity) {
@@ -107,7 +107,7 @@ function draw() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  // resizeCanvas(windowWidth, windowHeight);
 
 }
 
@@ -154,7 +154,7 @@ function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
   let fs = fullscreen();
-  if (!fs) fullscreen(!fs);
+  if (!fs) fullscreen(true);
 }
 
 function touchMoved() {

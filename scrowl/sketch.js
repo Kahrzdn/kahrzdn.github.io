@@ -39,8 +39,6 @@ var wdy;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  let fs = fullscreen();
-  if (!fs) fullscreen(true);
   var r = floor(random(6));
   levels[0] = createLevel(3 + r, 3 + (6 - r), 30 + floor(random(70)));
 }
@@ -156,6 +154,8 @@ var lanePos = 0;
 function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
+  let fs = fullscreen();
+  if (!fs) fullscreen(true);
 }
 
 function touchMoved() {

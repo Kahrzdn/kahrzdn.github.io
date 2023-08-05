@@ -156,8 +156,6 @@ var lanePos = 0;
 function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
-  let fs = fullscreen();
-  if (!fs) fullscreen(true);
 }
 
 function touchMoved() {

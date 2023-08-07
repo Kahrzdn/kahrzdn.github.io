@@ -106,6 +106,7 @@ function drawBrick(px, py, dy, colorNum, check) {
 
 function draw() {
   background(245);
+  resizeCanvas(windowWidth, windowHeight);
   drawLevel(levels[currentLevel])
 }
 
@@ -156,8 +157,7 @@ var lanePos = 0;
 function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
-  let fs = fullscreen();
-  if (!fs) fullscreen(true);
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function touchMoved() {

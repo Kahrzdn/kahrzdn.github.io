@@ -168,47 +168,6 @@ function init() {
   levels[0] = createLevel(geometries,matrix,quaternion,color,3 + r, 3 + (6 - r), 30 + Math.floor(Math.random()*70));
 
 
-  for (let i = 0; i < 5; i++) {
-
-    const geometry = new RoundedBoxGeometry(1, 1, 1, 7, 0.2);
-
-    const position = new THREE.Vector3();
-    position.x = Math.random() * 10000 - 5000;
-    position.y = Math.random() * 6000 - 3000;
-    position.z = Math.random() * 8000 - 4000;
-
-    const rotation = new THREE.Euler();
-    rotation.x = Math.random() * 2 * Math.PI;
-    rotation.y = Math.random() * 2 * Math.PI;
-    rotation.z = Math.random() * 2 * Math.PI;
-
-    const scale = new THREE.Vector3();
-    scale.x = Math.random() * 200 + 100;
-    scale.y = Math.random() * 200 + 100;
-    scale.z = Math.random() * 200 + 100;
-
-    quaternion.setFromEuler(rotation);
-    matrix.compose(position, quaternion, scale);
-
-    geometry.applyMatrix4(matrix);
-
-    // give the geometry's vertices a random color to be displayed and an integer
-    // identifier as a vertex attribute so boxes can be identified after being merged.
-    applyVertexColors(geometry, color.setHex(Math.random() * 0xffffff));
-    applyId(geometry, i);
-
-    geometries.push(geometry);
-
-    /*pickingData[ i ] = {
-
-    	position: position,
-    	rotation: rotation,
-    	scale: scale
-
-    };*/
-
-  }
-
   const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
   scene.add(new THREE.Mesh(mergedGeometry, defaultMaterial));
   pickingScene.add(new THREE.Mesh(mergedGeometry, pickingMaterial));
@@ -216,7 +175,7 @@ function init() {
   highlightBox = new THREE.Mesh(
     new THREE.BoxGeometry(),
     new THREE.MeshLambertMaterial({
-      color: 0xffff00
+      color: 0xff9f00
     })
   );
   scene.add(highlightBox);
@@ -299,6 +258,7 @@ function pick() {
     highlightBox.rotation.copy(data.rotation);
     highlightBox.scale.copy(data.scale).add(offset);
     highlightBox.visible = true;
+    console.log(highlightBox.position)
 
   } else {
 
@@ -349,7 +309,7 @@ function createLevel(geometries, matrix, quaternion, color, numRow, numLanes, co
   for (let i = 0; i < lanes.length; i++) {
     for (let j = 0; j < lanes[i].length; j++) {
 
-      const geometry = new RoundedBoxGeometry(1, 1, 1, 7, 0.2);
+      const geometry = new RoundedBoxGeometry(1, 1, 1, 0.15, 1);
 
       const position = new THREE.Vector3();
       position.x = (i - lanes.length / 2 + 0.5) * 1100;
@@ -364,7 +324,7 @@ function createLevel(geometries, matrix, quaternion, color, numRow, numLanes, co
       const scale = new THREE.Vector3();
       scale.x = 1000;
       scale.y = 1000;
-      scale.z = 1000;
+      scale.z = 200;
 
       quaternion.setFromEuler(rotation);
       matrix.compose(position, quaternion, scale);
@@ -374,7 +334,7 @@ function createLevel(geometries, matrix, quaternion, color, numRow, numLanes, co
       // give the geometry's vertices a random color to be displayed and an integer
       // identifier as a vertex attribute so boxes can be identified after being merged.
       applyVertexColors(geometry,  color.setHex(parseInt(colorMap[lanes[i][j]].substring(1),16)));//;color.setHex(Math.random() * 0xffffff));
-      applyId(geometry, i);
+      applyId(geometry, c);
 
       geometries.push(geometry);
 
@@ -385,6 +345,7 @@ function createLevel(geometries, matrix, quaternion, color, numRow, numLanes, co
         scale: scale
 
       };
+
       c++;
 
     }

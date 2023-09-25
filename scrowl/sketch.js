@@ -90,6 +90,8 @@ function drawLane(place, dy, lane, checkRows) {
   for (var i = 0; i < lane.length; i++) {
     console.log(checkRows[i]);
     drawBrick(place, i, dy, lane[i], checkRows[i]);
+    if (dy>0)
+    drawBrick(place, i, -lane.length*wdy+dy, lane[i], checkRows[i])
   }
 }
 

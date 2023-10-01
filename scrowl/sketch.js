@@ -43,6 +43,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   var r = floor(random(6));
   levels[0] = createLevel(3 + r, 3 + (6 - r), 30 + floor(random(70)));
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function createLevel(numRow, numLanes, complexity) {

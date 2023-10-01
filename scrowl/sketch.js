@@ -2,7 +2,7 @@ const colorMap = [
   "#000000",
   "#be1e2d",
   "#ffde17",
-  "#ffffff",
+ // "#ffffff",
   "#21409a",
   "#ff0000",
   "#ffa500",
@@ -111,7 +111,7 @@ function drawBrick(px, py, dy, colorNum, check) {
 }
 
 function draw() {
-  background(245);
+  background(45);
   resizeCanvas(windowWidth, windowHeight);
   drawLevel(levels[currentLevel])
 }

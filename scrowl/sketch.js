@@ -48,7 +48,8 @@ function setup() {
   var r = floor(random(6));
   var s = floor(random(7));
   levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
-  //setTimeout(()=>{resizeCanvas(windowWidth, windowHeight)});
+  setTimeout(()=>{ww=windowWidth;
+    wh=windowHeight;},900);
 }
 
 function createLevel(numRow, numLanes, complexity) {
@@ -82,8 +83,8 @@ function shuffle(array) {
 };
 
 function drawLevel(level) {
-  wdx = ww / level.lanes.length;
-  wdy = wh / level.lanes[0].length;
+  wdx = window.innerWidth / level.lanes.length;
+  wdy = window.innerHeight / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePos == i)
       drawLane(i, laneDY, level.lanes[i], level.checkRows)
@@ -118,7 +119,7 @@ function drawBrick(px, py, dy, colorNum, check) {
 
 function draw() {
   background(45);
-  resizeCanvas(ww, wh);
+  //resizeCanvas(ww, wh);
   drawLevel(levels[currentLevel])
 }
 

@@ -119,12 +119,12 @@ function drawBrick(px, py, dy, colorNum, check) {
 
 function draw() {
   background(45);
-  resizeCanvas(ww, wh);
+  resizeCanvas(windowWidth, windowHeight);
   drawLevel(levels[currentLevel])
 }
 
 function windowResized() {
- resizeCanvas(ww, wh);
+ resizeCanvas(windowWidth, windowHeight);
 
 }
 
@@ -170,7 +170,7 @@ var lanePos = 0;
 function touchStarted() {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
-  resizeCanvas(ww, wh);
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function touchMoved() {

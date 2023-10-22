@@ -48,8 +48,8 @@ function setup() {
   var r = floor(random(6));
   var s = floor(random(7));
   levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
-  setTimeout(()=>{ww=windowWidth;
-    wh=windowHeight;},900);
+ /* setTimeout(()=>{ww=windowWidth;
+    wh=windowHeight;},900);*/
 }
 
 function createLevel(numRow, numLanes, complexity) {

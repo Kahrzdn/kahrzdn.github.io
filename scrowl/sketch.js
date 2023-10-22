@@ -42,7 +42,7 @@ var wdy;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   var r = floor(random(6));
-  var s = floor(random(6));
+  var s = floor(random(7));
   levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
   setTimeout(()=>{resizeCanvas(windowWidth, windowHeight)});
 }
@@ -51,7 +51,7 @@ function createLevel(numRow, numLanes, complexity) {
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
-    var lane = [];
+    var lane = []; 
 
     if (random(100) > complexity) {
       //mono

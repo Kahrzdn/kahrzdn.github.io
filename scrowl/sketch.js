@@ -42,7 +42,8 @@ var wdy;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   var r = floor(random(6));
-  levels[0] = createLevel(3 + r, 3 + (6 - r), 30 + floor(random(70)));
+  var S = floor(random(6));
+  levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
   resizeCanvas(windowWidth, windowHeight);
 }
 
@@ -105,7 +106,7 @@ function drawBrick(px, py, dy, colorNum, check) {
   noStroke();
   if (check) {
     fill(sin(py + -px / 4 + frameCount / 10) * 128 + 128);
-    rect(px * wdx, py * wdy + dy, wdx, wdy);
+   // rect(px * wdx, py * wdy + dy, wdx, wdy);
   }
   fill(col);
   rect(px * wdx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
@@ -181,8 +182,10 @@ function touchMoved() {
 
 function touchEnded() {
   if (levels[currentLevel].done) {
-    var r = floor(random(8));
-    levels[currentLevel] = createLevel(3 + r, 3 + (8 - r), 30 + floor(random(70)));
+    var r = floor(random(6));
+    var s = floor(random(6));
+
+    levels[currentLevel] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
 
     return;
   }

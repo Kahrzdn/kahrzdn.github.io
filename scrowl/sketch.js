@@ -44,7 +44,7 @@ function setup() {
   var r = floor(random(6));
   var s = floor(random(6));
   levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
-  resizeCanvas(windowWidth, windowHeight);
+  setTimeout(()=>{resizeCanvas(windowWidth, windowHeight)});
 }
 
 function createLevel(numRow, numLanes, complexity) {

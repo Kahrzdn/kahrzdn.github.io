@@ -119,7 +119,7 @@ function drawBrick(px, py, dy, colorNum, check) {
 
 function draw() {
   background(45);
-  //resizeCanvas(ww, wh);
+  resizeCanvas(ww, wh);
   drawLevel(levels[currentLevel])
 }
 

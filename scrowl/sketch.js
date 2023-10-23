@@ -48,9 +48,7 @@ function setup() {
   var r = floor(random(6));
   var s = floor(random(7));
   levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
- /* setTimeout(()=>{ww=windowWidth;
-    wh=windowHeight;},900);*/
-}
+ }
 
 function createLevel(numRow, numLanes, complexity) {
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
@@ -111,7 +109,7 @@ function drawBrick(px, py, dy, colorNum, check) {
   noStroke();
   if (check) {
     fill(sin(py + -px / 4 + frameCount / 10) * 128 + 128);
-   // rect(px * wdx, py * wdy + dy, wdx, wdy);
+    rect(px * wdx, py * wdy + dy, wdx, wdy);
   }
   fill(col);
   rect(px * wdx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);

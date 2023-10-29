@@ -47,7 +47,7 @@ function setup() {
   createCanvas(ww, ww);
   var r = floor(random(6));
   var s = floor(random(7));
-  levels[0] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
+  levels[0] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
  }
 
 function createLevel(numRow, numLanes, complexity) {
@@ -73,7 +73,13 @@ function createLevel(numRow, numLanes, complexity) {
   for (var i = 0; i < lanes.length; i++) {
     lanes[i] = arrayRotateNum(lanes[i], floor(random(lanes[i].length)));
   }
-  return { lanes: lanes, checkRows: Array(numRow).fill(false) };
+  var level = { lanes: lanes, checkRows: Array(numRow).fill(false) }
+  checkLanes(level);
+  if (level.done) 
+  {
+      level = createLevel(numRow, numLanes, complexity);
+  }
+  return level;
 }
 
 function shuffle(array) {
@@ -188,7 +194,7 @@ function touchEnded() {
     var r = floor(random(6));
     var s = floor(random(6));
 
-    levels[currentLevel] = createLevel(2 + r, 2 + s, 50 + floor(random(50)));
+    levels[currentLevel] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
 
     return;
   }

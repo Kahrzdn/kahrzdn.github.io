@@ -2,7 +2,7 @@ const colorMap = [
   "#000000",
   "#be1e2d",
   "#ffde17",
- // "#ffffff",
+  // "#ffffff",
   "#21409a",
   "#ff0000",
   "#ffa500",
@@ -42,19 +42,19 @@ var ww;
 var wh;
 
 function setup() {
-  ww=windowWidth;
-  wh=windowHeight;
+  ww = windowWidth;
+  wh = windowHeight;
   createCanvas(ww, ww);
   var r = floor(random(6));
   var s = floor(random(7));
   levels[0] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
- }
+}
 
 function createLevel(numRow, numLanes, complexity) {
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
-    var lane = []; 
+    var lane = [];
 
     if (random(100) > complexity) {
       //mono
@@ -71,13 +71,12 @@ function createLevel(numRow, numLanes, complexity) {
       (prev[i] || []).concat(next[i])
     ), []);
   for (var i = 0; i < lanes.length; i++) {
-    lanes[i] = arrayRotateNum(lanes[i], floor(random(lanes[i].length)));
+    lanes[i] = arrayRotateColNum(lanes[i], floor(random(lanes[i].length)));
   }
   var level = { lanes: lanes, checkRows: Array(numRow).fill(false) }
   checkLanes(level);
-  if (level.done) 
-  {
-      level = createLevel(numRow, numLanes, complexity);
+  if (level.done) {
+    level = createLevel(numRow, numLanes, complexity);
   }
   return level;
 }
@@ -90,35 +89,46 @@ function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
   wdy = window.innerHeight / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
-    if (lanePos == i)
-      drawLane(i, laneDY, level.lanes[i], level.checkRows)
+    if (lanePosX == i)
+      drawLane(i, level.lanes.length,laneDX, laneDY, level.lanes[i], level.checkRows)
     else
-      drawLane(i, 0, level.lanes[i], level.checkRows);
+      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows);
   }
 }
 
-function drawLane(place, dy, lane, checkRows) {
+function drawLane(place, lanesNum,dx, dy, lane, checkRows) {
   for (var i = 0; i < lane.length; i++) {
     console.log(checkRows[i]);
-    drawBrick(place, i, dy, lane[i], checkRows[i]);
-    if (dy>0) {
-      drawBrick(place, i, -lane.length*wdy+dy, lane[i], checkRows[i])
+    var ddx = 0;
+    if (i == lanePosY) {
+      ddx = dx;
     }
-    if (dy<0) {
-      drawBrick(place, i, lane.length*wdy+dy, lane[i], checkRows[i])
+    drawBrick(place, i, ddx, dy, lane[i], checkRows[i]);
+    if (dy > 0) {
+      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i], checkRows[i])
     }
+    if (dy < 0) {
+      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i], checkRows[i])
+    }
+    if (ddx > 0) {
+      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+    }
+    if (ddx < 0) {
+      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+    }
+
   }
 }
 
-function drawBrick(px, py, dy, colorNum, check) {
+function drawBrick(px, py, dx, dy, colorNum, check) {
   col = color(colorMap[colorNum]);
   noStroke();
   if (check) {
     fill(sin(py + -px / 4 + frameCount / 10) * 128 + 128);
-    rect(px * wdx, py * wdy + dy, wdx, wdy);
+    rect(px * wdx + dx, py * wdy + dy, wdx, wdy);
   }
   fill(col);
-  rect(px * wdx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
+  rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
 }
 
 function draw() {
@@ -128,24 +138,53 @@ function draw() {
 }
 
 function windowResized() {
- resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth, windowHeight);
 
 }
 
 var mousepos = { x: -1, y: -1 }
 
-function arrayRotateNum(arr, num) {
+function arrayRotateColNum(arr, num) {
   for (var i = 0; i < num; i++) {
-    arr = arrayRotate(arr, false);
+    arr = arrayRotateCol(arr, false);
   }
   return arr;
 }
 
-function arrayRotate(arr, reverse) {
+function arrayRotateCol(arr, reverse) {
   if (reverse) arr.unshift(arr.pop());
   else arr.push(arr.shift());
   return arr;
 }
+
+function arrayRotateRowNum(arr, num) {
+  for (var i = 0; i < num; i++) {
+    arr = arrayRotateRow(arr, false);
+  }
+  return arr;
+}
+
+function arrayRotateRow(arr, row, reverse) {
+  if (reverse) {
+    var prev = arr[arr.length - 1][row];
+    for (var i = 0; i < arr.length; i++) {
+      var t = arr[i][row];
+      arr[i][row] = prev;
+      prev = t;
+    }
+  }
+  else {
+    var prev = arr[0][row];
+    for (var i = arr.length - 1; i >= 0; i--) {
+      var t = arr[i][row];
+      arr[i][row] = prev;
+      prev = t;
+    }
+  }
+
+  return arr;
+}
+
 
 function checkLanes(level) {
   var lanes = level.lanes;
@@ -168,8 +207,10 @@ function checkLanes(level) {
 }
 
 
+var laneDX = 0;
 var laneDY = 0;
-var lanePos = 0;
+var lanePosX = 0;
+var lanePosY = 0;
 
 function touchStarted() {
   mousepos.x = mouseX;
@@ -178,12 +219,20 @@ function touchStarted() {
 }
 
 function touchMoved() {
+  laneDX = mouseX - mousepos.x;
   laneDY = mouseY - mousepos.y;
-  lanePos = floor(mousepos.x / wdx);
-  const deltaY = round((mouseY - mousepos.y) / wdy);
+  if (abs(laneDX) > abs(laneDY)) {
+    laneDY = 0;
+  }
+  else {
+    laneDX = 0;
+  }
+  lanePosX = floor(mousepos.x / wdx);
+  lanePosY = floor(mousepos.y / wdy);
+  const deltaX = round((laneDX) / wdx);
+  const deltaY = round((laneDY) / wdy);
 
-  console.log("dssd" + lanePos)
-  if (deltaY == 0)
+  if (deltaY == 0 && deltaX == 0)
     return;
 
 
@@ -198,19 +247,35 @@ function touchEnded() {
 
     return;
   }
+  const deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
-  console.log("dssd" + lanePos)
-  if (deltaY < 0) {
-    for (var i = 0; i < -deltaY; i++) {
-      arrayRotate(levels[currentLevel].lanes[lanePos], false);
+  if (abs(deltaX) > abs(deltaY)) {
+    if (deltaX < 0) {
+      for (var i = 0; i < -deltaX; i++) {
+        arrayRotateRow(levels[currentLevel].lanes, lanePosY, false);
+      }
+    }
+    if (deltaX > 0) {
+      for (var i = 0; i < deltaX; i++) {
+        arrayRotateRow(levels[currentLevel].lanes, lanePosY, true);
+      }
     }
   }
-  if (deltaY > 0) {
-    for (var i = 0; i < deltaY; i++) {
-      arrayRotate(levels[currentLevel].lanes[lanePos], true);
+  else {
+    if (deltaY < 0) {
+      for (var i = 0; i < -deltaY; i++) {
+        arrayRotateCol(levels[currentLevel].lanes[lanePosX], false);
+      }
+    }
+    if (deltaY > 0) {
+      for (var i = 0; i < deltaY; i++) {
+        arrayRotateCol(levels[currentLevel].lanes[lanePosX], true);
+      }
+
     }
   }
+  laneDX = 0;
   laneDY = 0;
   checkLanes(levels[currentLevel]);
 }

@@ -1,8 +1,7 @@
 const colorMap = [
-  "#000000",
+"#000000",
   "#be1e2d",
   "#ffde17",
-  // "#ffffff",
   "#21409a",
   "#ff0000",
   "#ffa500",
@@ -46,11 +45,16 @@ function setup() {
   wh = windowHeight;
   createCanvas(ww, ww);
   var r = floor(random(6));
-  var s = floor(random(7));
+  var s = floor(random(5));
   levels[0] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
 }
 
 function createLevel(numRow, numLanes, complexity) {
+  const hue=round(random(360));
+  const saturation = 50+round(random(50));
+  for(var i=0;i<numLanes;i++) {
+    colorMap[i]=color('hsl('+hue+', '+saturation+'%, '+round(100*(i+1)/(1+numLanes))+'%)');
+  }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
@@ -98,7 +102,6 @@ function drawLevel(level) {
 
 function drawLane(place, lanesNum,dx, dy, lane, checkRows) {
   for (var i = 0; i < lane.length; i++) {
-    console.log(checkRows[i]);
     var ddx = 0;
     if (i == lanePosY) {
       ddx = dx;
@@ -241,7 +244,7 @@ function touchMoved() {
 function touchEnded() {
   if (levels[currentLevel].done) {
     var r = floor(random(6));
-    var s = floor(random(6));
+    var s = floor(random(5));
 
     levels[currentLevel] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
 

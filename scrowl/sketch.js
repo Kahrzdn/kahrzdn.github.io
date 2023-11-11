@@ -53,7 +53,7 @@ function createLevel(numRow, numLanes, complexity) {
   const hue = round(random(360));
   const saturation = 50 + round(random(50));
   for (var i = 0; i < numLanes; i++) {
-    colorMap[i] = color('hsl(' + hue + ', ' + saturation + '%, ' + round(100 * (i + 1) / (1 + numLanes)) + '%)');
+    colorMap[i] = color('hsl(' + hue + ', ' + saturation + '%, ' + round(100 * (i+0.3) / (numLanes)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
@@ -164,8 +164,9 @@ function drawBrick(px, py, dx, dy, colorNum, checkRow) {
 }
 
 function draw() {
-  background(45);
+
   resizeCanvas(windowWidth, windowHeight);
+  background(255);
   drawLevel(levels[currentLevel])
 }
 

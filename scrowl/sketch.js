@@ -140,8 +140,8 @@ function drawBrick(px, py, dx, dy, colorNum, checkRow) {
     const fy = wdy * sin(angle) / 8;
 
     const fx = wdx * (1 + cos(angle)) / 4;
-    const indentx = 0
-    const indenty = 0
+    const indentx = -0.5
+    const indenty = 0.5
 
     fill(col);
 

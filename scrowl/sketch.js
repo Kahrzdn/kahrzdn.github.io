@@ -141,7 +141,7 @@ function drawBrick(px, py, dx, dy, colorNum, checkRow) {
 
     const fx = wdx * (1 + cos(angle)) / 4;
     const indentx = -0.5
-    const indenty = 0.5
+    const indenty = 1
 
     fill(col);
 
@@ -266,6 +266,10 @@ function touchMoved() {
   else {
     laneDX = 0;
   }
+
+  //hacking horzmove away
+  laneDX = 0;
+  
   lanePosX = floor(mousepos.x / wdx);
   lanePosY = floor(mousepos.y / wdy);
   const deltaX = round((laneDX) / wdx);
@@ -286,9 +290,12 @@ function touchEnded() {
 
     return;
   }
-  const deltaX = round((mouseX - mousepos.x) / wdx);
+  var deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
+   //hacking horzmove away
+   deltaX = 0;
+  
   if (abs(deltaX) > abs(deltaY)) {
     if (deltaX < 0) {
       for (var i = 0; i < -deltaX; i++) {

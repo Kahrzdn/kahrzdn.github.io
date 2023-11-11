@@ -1,5 +1,5 @@
 const colorMap = [
-"#000000",
+  "#000000",
   "#be1e2d",
   "#ffde17",
   "#21409a",
@@ -50,10 +50,10 @@ function setup() {
 }
 
 function createLevel(numRow, numLanes, complexity) {
-  const hue=round(random(360));
-  const saturation = 50+round(random(50));
-  for(var i=0;i<numLanes;i++) {
-    colorMap[i]=color('hsl('+hue+', '+saturation+'%, '+round(100*(i+1)/(1+numLanes))+'%)');
+  const hue = round(random(360));
+  const saturation = 50 + round(random(50));
+  for (var i = 0; i < numLanes; i++) {
+    colorMap[i] = color('hsl(' + hue + ', ' + saturation + '%, ' + round(100 * (i + 1) / (1 + numLanes)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
@@ -77,7 +77,11 @@ function createLevel(numRow, numLanes, complexity) {
   for (var i = 0; i < lanes.length; i++) {
     lanes[i] = arrayRotateColNum(lanes[i], floor(random(lanes[i].length)));
   }
-  var level = { lanes: lanes, checkRows: Array(numRow).fill(false) }
+  var checkRows = [];
+  for (let i = 0; i < numRow; i++) {
+    checkRows[i] = { check: false };
+  }
+  var level = { lanes: lanes, checkRows }
   checkLanes(level);
   if (level.done) {
     level = createLevel(numRow, numLanes, complexity);
@@ -94,13 +98,13 @@ function drawLevel(level) {
   wdy = window.innerHeight / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
-      drawLane(i, level.lanes.length,laneDX, laneDY, level.lanes[i], level.checkRows)
+      drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
     else
       drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows);
   }
 }
 
-function drawLane(place, lanesNum,dx, dy, lane, checkRows) {
+function drawLane(place, lanesNum, dx, dy, lane, checkRows) {
   for (var i = 0; i < lane.length; i++) {
     var ddx = 0;
     if (i == lanePosY) {
@@ -123,15 +127,40 @@ function drawLane(place, lanesNum,dx, dy, lane, checkRows) {
   }
 }
 
-function drawBrick(px, py, dx, dy, colorNum, check) {
+function drawBrick(px, py, dx, dy, colorNum, checkRow) {
   col = color(colorMap[colorNum]);
   noStroke();
-  if (check) {
-    fill(sin(py + -px / 4 + frameCount / 10) * 128 + 128);
-    rect(px * wdx + dx, py * wdy + dy, wdx, wdy);
+  if (checkRow.check) {
+    console.log(checkRow);
+    const checkDur = new Date().getTime() - checkRow.time;
+    angle = 0-checkDur / 100 - 0.5*py - 2*px;
+    if (angle>-3*PI || angle<-5*PI)
+      angle = -3*PI;
+
+    const fy = wdy * sin(angle) / 8;
+
+    const fx = wdx * (1 + cos(angle)) / 4;
+    const indentx = 0
+    const indenty = 0
+
+    fill(col);
+
+    const x1 = +indentx + px * wdx + dx + fx;
+    const y1 = +indenty + py * wdy + dy + fy;
+    const x2 = -indentx + px * wdx + dx - fx + wdx;
+    const y2 = +indenty + py * wdy + dy - fy;
+    const x3 = -indentx + px * wdx + dx - fx + wdx;
+    const y3 = -indenty + py * wdy + dy + fy + wdy;
+    const x4 = +indentx + px * wdx + dx + fx;
+    const y4 = -indenty + py * wdy + dy - fy + wdy;
+    quad(x1, y1, x2, y2, x3, y3, x4, y4);
+
   }
-  fill(col);
-  rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
+  else {
+    fill(col);
+    rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
+  }
+
 }
 
 function draw() {
@@ -192,21 +221,27 @@ function arrayRotateRow(arr, row, reverse) {
 function checkLanes(level) {
   var lanes = level.lanes;
   var doneCheck = true;
+
+  var sl = "";
   for (var i = 0; i < lanes[0].length; i++) {
     var checkRow = Array(lanes.length).fill(0);
     for (var j = 0; j < lanes.length; j++) {
       checkRow[lanes[j][i]]++;
     }
-    check = true;
+    var check = true;
     for (var j = 0; j < lanes.length; j++) {
       if (![0, 1, lanes.length].includes(checkRow[j])) {
         check = false;
       }
     }
-    level.checkRows[i] = check;
+    level.checkRows[i].time = new Date().getTime();
+    console.log(i + " " + check);
+    level.checkRows[i].check = check;
     doneCheck = doneCheck & check;
+    sl += Number(level.checkRows[i].check)
   }
   level.done = doneCheck;
+  console.log(sl)
 }
 
 
@@ -281,6 +316,7 @@ function touchEnded() {
   laneDX = 0;
   laneDY = 0;
   checkLanes(levels[currentLevel]);
+  console.log(levels[currentLevel])
 }
 
 function touchHandler(event) {

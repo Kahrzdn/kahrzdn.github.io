@@ -334,13 +334,3 @@ function touchHandler(event) {
     event.preventDefault()
   }
 }
-
-/*
-function mousePressed(event) {
-  if (mouseX > 0 && mouseX < 10 && mouseY > 0 && mouseY < 10) {
-    let fs = fullscreen();
-    fullscreen(!fs);
-  }
-  return false;
-}*/
-

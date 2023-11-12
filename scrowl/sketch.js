@@ -344,10 +344,3 @@ function mousePressed(event) {
   return false;
 }*/
 
-document.ontouchmove = function (event) {
-  event.preventDefault();
-};
-
-document.addEventListener('gesturestart', function (e) {
-  e.preventDefault();
-});

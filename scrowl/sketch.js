@@ -347,3 +347,7 @@ function mousePressed(event) {
 document.ontouchmove = function (event) {
   event.preventDefault();
 };
+
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+});

@@ -51,7 +51,7 @@ function setup() {
 
 function createLevel(numRow, numLanes, complexity) {
   const hue = round(random(360));
-  const saturation = 20 + round(random(30));
+  const saturation = 30 + round(random(30));
   for (var i = 0; i < numLanes; i++) {
     colorMap[i] = color('hsl(' + (hue+i*10) + ', ' + saturation + '%, ' + round(100 * (i+0.3) / (numLanes)) + '%)');
   }

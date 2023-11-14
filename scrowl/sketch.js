@@ -51,9 +51,9 @@ function setup() {
 
 function createLevel(numRow, numLanes, complexity) {
   const hue = round(random(360));
-  const saturation = 50 + round(random(50));
+  const saturation = 20 + round(random(30));
   for (var i = 0; i < numLanes; i++) {
-    colorMap[i] = color('hsl(' + hue + ', ' + saturation + '%, ' + round(100 * (i+0.3) / (numLanes)) + '%)');
+    colorMap[i] = color('hsl(' + (hue+i*10) + ', ' + saturation + '%, ' + round(100 * (i+0.3) / (numLanes)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];

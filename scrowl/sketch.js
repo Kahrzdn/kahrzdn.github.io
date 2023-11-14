@@ -53,7 +53,7 @@ function createLevel(numRow, numLanes, complexity) {
   const hue = round(random(360));
   const saturation = 30 + round(random(30));
   for (var i = 0; i < numLanes; i++) {
-    colorMap[i] = color('hsl(' + (hue+i*10) + ', ' + saturation + '%, ' + round(100 * (i+0.3) / (numLanes)) + '%)');
+    colorMap[i] = color('hsl(' + (hue + i * 10) + ', ' + saturation + '%, ' + round(100 * (i + 0.3) / (numLanes)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
@@ -100,61 +100,82 @@ function drawLevel(level) {
     if (lanePosX == i)
       drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
     else
-      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows);
+      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows, level.done);
   }
 }
 
-function drawLane(place, lanesNum, dx, dy, lane, checkRows) {
+function drawLane(place, lanesNum, dx, dy, lane, checkRows, done) {
   for (var i = 0; i < lane.length; i++) {
     var ddx = 0;
     if (i == lanePosY) {
       ddx = dx;
     }
-    drawBrick(place, i, ddx, dy, lane[i], checkRows[i]);
+    drawBrick(place, i, ddx, dy, lane[i], checkRows[i], done);
     if (dy > 0) {
-      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i], checkRows[i])
+      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i], checkRows[i], done)
     }
     if (dy < 0) {
-      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i], checkRows[i])
+      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i], checkRows[i], done)
     }
     if (ddx > 0) {
-      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i], checkRows[i], done)
     }
     if (ddx < 0) {
-      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i], checkRows[i], done)
     }
 
   }
 }
 
-function drawBrick(px, py, dx, dy, colorNum, checkRow) {
+function drawBrick(px, py, dx, dy, colorNum, checkRow, done) {
   col = color(colorMap[colorNum]);
   noStroke();
   if (checkRow.check) {
     console.log(checkRow);
     const checkDur = new Date().getTime() - checkRow.time;
-    angle = 0-checkDur / 100 - 0.5*py - 2*px;
-    if (angle>-3*PI || angle<-5*PI)
-      angle = -3*PI;
 
-    const fy = wdy * sin(angle) / 8;
 
-    const fx = wdx * (1 + cos(angle)) / 4;
     const indentx = -0.5
     const indenty = 1
 
     fill(col);
+    if (done) {
+      angle = 0 - checkDur / 100 - 0.5 * px - 2 * py;
+      if (angle > -3 * PI || angle < -5 * PI)
+        angle = -3 * PI;
+      const fy = wdy * sin(angle) / 8;
 
-    const x1 = +indentx + px * wdx + dx + fx;
-    const y1 = +indenty + py * wdy + dy + fy;
-    const x2 = -indentx + px * wdx + dx - fx + wdx;
-    const y2 = +indenty + py * wdy + dy - fy;
-    const x3 = -indentx + px * wdx + dx - fx + wdx;
-    const y3 = -indenty + py * wdy + dy + fy + wdy;
-    const x4 = +indentx + px * wdx + dx + fx;
-    const y4 = -indenty + py * wdy + dy - fy + wdy;
-    quad(x1, y1, x2, y2, x3, y3, x4, y4);
+      const fx = wdx * (1 + cos(angle)) / 4;
 
+      const x1 = +indentx + px * wdx + dx + fx;
+      const y1 = +indenty + py * wdy + dy + fy;
+      const x2 = -indentx + px * wdx + dx - fx + wdx;
+      const y2 = +indenty + py * wdy + dy - fy;
+      const x3 = -indentx + px * wdx + dx - fx + wdx;
+      const y3 = -indenty + py * wdy + dy + fy + wdy;
+      const x4 = +indentx + px * wdx + dx + fx;
+      const y4 = -indenty + py * wdy + dy - fy + wdy;
+      quad(x1, y1, x2, y2, x3, y3, x4, y4);
+
+    }
+    else {
+      angle = 0 - checkDur / 100 - 0.5 * py - 2 * px;
+      if (angle > -3 * PI || angle < -5 * PI)
+        angle = -3 * PI;
+      const fy = wdy * sin(angle) / 8;
+
+      const fx = wdx * (1 + cos(angle)) / 4;
+
+      const x1 = +indentx + px * wdx + dx + fx;
+      const y1 = +indenty + py * wdy + dy + fy;
+      const x2 = -indentx + px * wdx + dx - fx + wdx;
+      const y2 = +indenty + py * wdy + dy - fy;
+      const x3 = -indentx + px * wdx + dx - fx + wdx;
+      const y3 = -indenty + py * wdy + dy + fy + wdy;
+      const x4 = +indentx + px * wdx + dx + fx;
+      const y4 = -indenty + py * wdy + dy - fy + wdy;
+      quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
   }
   else {
     fill(col);
@@ -269,7 +290,7 @@ function touchMoved() {
 
   //hacking horzmove away
   laneDX = 0;
-  
+
   lanePosX = floor(mousepos.x / wdx);
   lanePosY = floor(mousepos.y / wdy);
   const deltaX = round((laneDX) / wdx);
@@ -293,9 +314,9 @@ function touchEnded() {
   var deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
-   //hacking horzmove away
-   deltaX = 0;
-  
+  //hacking horzmove away
+  deltaX = 0;
+
   if (abs(deltaX) > abs(deltaY)) {
     if (deltaX < 0) {
       for (var i = 0; i < -deltaX; i++) {

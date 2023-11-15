@@ -96,11 +96,12 @@ function shuffle(array) {
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
   wdy = window.innerHeight / level.lanes[0].length;
+
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
-      drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
+      drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], laneDY==0?level.checkRows:Array(level.lanes[i].length).fill({check:false}),level.done)
     else
-      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows, level.done);
+      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], laneDY==0?level.checkRows:Array(level.lanes[i].length).fill({check:false}), level.done);
   }
 }
 

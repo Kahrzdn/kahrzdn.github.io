@@ -1,6 +1,6 @@
 const colorMap = [
   "#000000",
-  "#be1e2d",
+  "#ffffff",
   "#ffde17",
   "#21409a",
   "#ff0000",
@@ -52,18 +52,20 @@ function setup() {
 
 function createLevel(numRow, numLanes, complexity) {
   const hue = round(random(360));
-  const saturation = 50 + round(random(50));
-  for (var i = 0; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + hue + ', ' + saturation + '%, ' + round(100 * (i) / (maxColors)) + '%)');
+  const saturation = 70 + round(random(20));
+  for (var i = 2; i <= maxColors; i++) {
+    colorMap[i] = color('hsl(' + (hue+i*30) + ', ' + saturation + '%, ' + round(20+50 * (i) / (maxColors)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
-    var lane = [];
+    var lane = new Array(numLanes).fill(1);
 
-    lane = shuffle([...Array(maxColors).keys()]);
-    
-    lanes.push(lane);
+    const c=2+round(random(maxColors-2))
+    for(var j=0;j<2;j++) {
+      lane[j] = c;
+    }
+    lanes.push(shuffle(lane));
   }
   //  transpose lanes;
   lanes = lanes.reduce((prev, next) =>

@@ -45,9 +45,9 @@ function setup() {
   ww = windowWidth;
   wh = windowHeight;
   createCanvas(ww, ww);
-  var r = floor(random(6));
-  var s = floor(random(5));
-  levels[0] = createLevel(10 + r, 10 + s, 40 + floor(random(50)));
+  var r = floor(random(0));
+  var s = floor(random(0));
+  levels[0] = createLevel(8 + r, 16 + s, 40 + floor(random(50)));
 }
 
 function createLevel(numRow, numLanes, complexity) {
@@ -219,28 +219,36 @@ function arrayRotateRow(arr, row, reverse) {
 
 function checkLanes(level) {
   var lanes = level.lanes;
-  var doneCheck = true;
+  var doneCheck = false;
 
   var sl = "";
-  for (var i = 0; i < lanes[0].length; i++) {
-    var checkRow = Array(lanes.length).fill(0);
-    for (var j = 0; j < lanes.length; j++) {
-      checkRow[lanes[j][i]]++;
-    }
-    var check = true;
-    for (var j = 0; j < lanes.length; j++) {
-      if (![0, 1, lanes.length].includes(checkRow[j])) {
-        check = false;
+  for (var i = 0; i < lanes.length; i++) {
+    var prev=lanes[i][0]
+    for (var j = 1; j < lanes[i].length; j++) {
+      var cell = lanes[i][j];
+      if(cell>1 && prev==cell) {
+        console.log(cell)
+        lanes[i][j-1]=1;
+        lanes[i][j]=1;
       }
+      prev=cell;
     }
-    level.checkRows[i].time = new Date().getTime();
-    console.log(i + " " + check);
-    level.checkRows[i].check = check;
-    doneCheck = doneCheck & check;
-    sl += Number(level.checkRows[i].check)
   }
+  for (var j = 0; j < lanes[0].length; j++) {
+    var prev=lanes[0][j]
+    for (var i = 1; i < lanes.length; i++) {
+      var cell = lanes[i][j];
+      if(cell>1 && prev==cell) {
+        console.log(cell)
+        lanes[i-1][j]=1;
+        lanes[i][j]=1;
+      }
+      prev=cell;
+    }
+  }
+
   level.done = doneCheck;
-  console.log(sl)
+  
 }
 
 

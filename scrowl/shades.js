@@ -22,31 +22,30 @@ var wdx;
 var wdy;
 var ww;
 var wh;
-var maxColors = 10;
+var maxColors = 11;
 
 function setup() {
   ww = windowWidth;
   wh = windowHeight;
   createCanvas(ww, ww);
-  var r = floor(random(0));
-  var s = floor(random(0));
-  levels[0] = createLevel(8 + r, 16 + s, 40 + floor(random(50)));
+ 
+  levels[0] = createLevel(8,12);
 }
 
-function createLevel(numRow, numLanes, complexity) {
-  const hue = round(random(160));
+function createLevel(numRow, numLanes) {
+  const hue = round(random(0));
   const saturation = 70 + round(random(20));
   for (var i = 3; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + (hue + i * 30) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
+    colorMap[i] = color('hsl(' + (hue + (i-3) * 45) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
   }
-  console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
+
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
     lane = [];
     for (var j = 0; j < numLanes; j++) {
       lane[j] = { color: 1, num: 1 };
     }
-    const c = 3 + round(random(maxColors - 2))
+    const c = 3 + i
     for (var j = 0; j < 2; j++) {
       lane[j].color = c;
       lane[j].num = c;

@@ -67,7 +67,7 @@ function createLevel(numRow, numLanes) {
   var level = { lanes: lanes, checkRows }
   checkLanes(level);
   if (level.done) {
-    level = createLevel(numRow, numLanes, complexity);
+    level = createLevel(numRow, numLanes);
   }
   return level;
 }
@@ -217,18 +217,21 @@ function arrayRotateRow(arr, row, reverse) {
 
 function checkLanes(level) {
   var lanes = level.lanes;
-  var doneCheck = false;
+  var doneCheck = true;
 
   var sl = "";
   for (var i = 0; i < lanes.length; i++) {
     var prev = lanes[i][0].num
     for (var j = 1; j < lanes[i].length; j++) {
       var cell = lanes[i][j].num;
+      if (cell>1) 
+        doneCheck=false;
       if (cell > 1 && prev == cell) {
         console.log(cell)
         lanes[i][j - 1] = {color:1,num:1};
         lanes[i][j] = {color:1,num:1};
       }
+     
       prev = cell;
     }
   }
@@ -241,6 +244,7 @@ function checkLanes(level) {
         lanes[i - 1][j] = {color:1,num:1};
         lanes[i][j] = {color:1,num:1};
       }
+      
       prev = cell;
     }
   }
@@ -287,10 +291,7 @@ function touchMoved() {
 function touchEnded() {
   removeColors(levels[currentLevel]);
   if (levels[currentLevel].done) {
-    var r = floor(random(6));
-    var s = floor(random(5));
-
-    levels[currentLevel] = createLevel(3 + r, 3 + s, 40 + floor(random(50)));
+    levels[currentLevel] = createLevel(8,12);
 
     return;
   }

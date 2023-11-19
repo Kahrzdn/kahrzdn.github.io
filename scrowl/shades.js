@@ -1,6 +1,7 @@
 const colorMap = [
-  "#000000",
+  "#444444",
   "#ffffff",
+  "#999999",
   "#ffde17",
   "#21409a",
   "#ff0000",
@@ -14,32 +15,14 @@ const colorMap = [
 
 //test
 
-var levels = [{
-  lanes:
-
-    [[0, 3, 4, 1, 2, 0, 1],
-    [0, 1, 1, 2, 3, 3, 1],
-    [2, 3, 4, 1, 2, 4, 2],
-    [0, 1, 3, 3, 4, 3, 1],
-    [0, 1, 2, 3, 4, 2, 1]
-    ]
-
-
-},
-{
-  lanes:
-    [[0, 1, 2, 0, 0, 2, 1, 2],
-    [0, 0, 0, 0, 0, 2, 1, 2],
-    [0, 1, 2, 0, 0, 2, 1, 2]]
-},
-]
+var levels = []
 
 var currentLevel = 0;
 var wdx;
 var wdy;
 var ww;
 var wh;
-var maxColors=10;
+var maxColors = 10;
 
 function setup() {
   ww = windowWidth;
@@ -51,19 +34,22 @@ function setup() {
 }
 
 function createLevel(numRow, numLanes, complexity) {
-  const hue = round(random(360));
+  const hue = round(random(160));
   const saturation = 70 + round(random(20));
-  for (var i = 2; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + (hue+i*30) + ', ' + saturation + '%, ' + round(20+50 * (i) / (maxColors)) + '%)');
+  for (var i = 3; i <= maxColors; i++) {
+    colorMap[i] = color('hsl(' + (hue + i * 30) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
   }
   console.log("nr:" + numRow + " nl:" + numLanes + " c:" + complexity);
   var lanes = [];
   for (var i = 0; i < numRow; i++) {
-    var lane = new Array(numLanes).fill(1);
-
-    const c=2+round(random(maxColors-2))
-    for(var j=0;j<2;j++) {
-      lane[j] = c;
+    lane = [];
+    for (var j = 0; j < numLanes; j++) {
+      lane[j] = { color: 1, num: 1 };
+    }
+    const c = 3 + round(random(maxColors - 2))
+    for (var j = 0; j < 2; j++) {
+      lane[j].color = c;
+      lane[j].num = c;
     }
     lanes.push(shuffle(lane));
   }
@@ -85,6 +71,19 @@ function createLevel(numRow, numLanes, complexity) {
     level = createLevel(numRow, numLanes, complexity);
   }
   return level;
+}
+
+function removeColors(level) {
+  for (var i = 0; i < level.lanes.length; i++) {
+    var lane=level.lanes[i];
+    for (var j = 0; j < lane.length; j++) {
+      if (lane[j].color>2) {
+        lane[j].color = 2;
+        return;
+      }
+    }
+  }
+   
 }
 
 function shuffle(array) {
@@ -125,15 +124,15 @@ function drawLane(place, lanesNum, dx, dy, lane, checkRows) {
   }
 }
 
-function drawBrick(px, py, dx, dy, colorNum, checkRow) {
-  col = color(colorMap[colorNum]);
+function drawBrick(px, py, dx, dy, cell, checkRow) {
+  col = color(colorMap[cell.color]);
   noStroke();
   if (checkRow.check) {
     console.log(checkRow);
     const checkDur = new Date().getTime() - checkRow.time;
-    angle = 0-checkDur / 100 - 0.5*py - 2*px;
-    if (angle>-3*PI || angle<-5*PI)
-      angle = -3*PI;
+    angle = 0 - checkDur / 100 - 0.5 * py - 2 * px;
+    if (angle > -3 * PI || angle < -5 * PI)
+      angle = -3 * PI;
 
     const fy = wdy * sin(angle) / 8;
 
@@ -223,32 +222,32 @@ function checkLanes(level) {
 
   var sl = "";
   for (var i = 0; i < lanes.length; i++) {
-    var prev=lanes[i][0]
+    var prev = lanes[i][0].num
     for (var j = 1; j < lanes[i].length; j++) {
-      var cell = lanes[i][j];
-      if(cell>1 && prev==cell) {
+      var cell = lanes[i][j].num;
+      if (cell > 1 && prev == cell) {
         console.log(cell)
-        lanes[i][j-1]=1;
-        lanes[i][j]=1;
+        lanes[i][j - 1] = {color:1,num:1};
+        lanes[i][j] = {color:1,num:1};
       }
-      prev=cell;
+      prev = cell;
     }
   }
   for (var j = 0; j < lanes[0].length; j++) {
-    var prev=lanes[0][j]
+    var prev = lanes[0][j].num
     for (var i = 1; i < lanes.length; i++) {
-      var cell = lanes[i][j];
-      if(cell>1 && prev==cell) {
+      var cell = lanes[i][j].num;
+      if (cell > 1 && prev == cell) {
         console.log(cell)
-        lanes[i-1][j]=1;
-        lanes[i][j]=1;
+        lanes[i - 1][j] = {color:1,num:1};
+        lanes[i][j] = {color:1,num:1};
       }
-      prev=cell;
+      prev = cell;
     }
   }
 
   level.done = doneCheck;
-  
+
 }
 
 
@@ -273,8 +272,8 @@ function touchMoved() {
     laneDX = 0;
   }
 
- 
-  
+
+
   lanePosX = floor(mousepos.x / wdx);
   lanePosY = floor(mousepos.y / wdy);
   const deltaX = round((laneDX) / wdx);
@@ -287,6 +286,7 @@ function touchMoved() {
 }
 
 function touchEnded() {
+  removeColors(levels[currentLevel]);
   if (levels[currentLevel].done) {
     var r = floor(random(6));
     var s = floor(random(5));
@@ -298,8 +298,8 @@ function touchEnded() {
   var deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
-   
-  
+
+
   if (abs(deltaX) > abs(deltaY)) {
     if (deltaX < 0) {
       for (var i = 0; i < -deltaX; i++) {

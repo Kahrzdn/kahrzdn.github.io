@@ -22,21 +22,21 @@ var wdx;
 var wdy;
 var ww;
 var wh;
-var maxColors = 11;
+var maxColors = 16;
 
 function setup() {
   ww = windowWidth;
   wh = windowHeight;
   createCanvas(ww, ww);
- 
-  levels[0] = createLevel(8,12);
+
+  levels[0] = createLevel(8, 12);
 }
 
 function createLevel(numRow, numLanes) {
-  const hue = round(random(0));
+  const hue = 0;
   const saturation = 70 + round(random(20));
   for (var i = 3; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + (hue + (i-3) * 45) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
+    colorMap[i] = color('hsl(' + round(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
   }
 
   var lanes = [];
@@ -45,10 +45,13 @@ function createLevel(numRow, numLanes) {
     for (var j = 0; j < numLanes; j++) {
       lane[j] = { color: 1, num: 1 };
     }
-    const c = 3 + i
-    for (var j = 0; j < 2; j++) {
+
+    for (j = 0; j < numLanes; j += 2) {
+      const c = j + 3;
       lane[j].color = c;
       lane[j].num = c;
+      lane[j + 1].color = c;
+      lane[j + 1].num = c;
     }
     lanes.push(shuffle(lane));
   }
@@ -72,17 +75,27 @@ function createLevel(numRow, numLanes) {
   return level;
 }
 
-function removeColors(level) {
+function removeColor(level) {
   for (var i = 0; i < level.lanes.length; i++) {
-    var lane=level.lanes[i];
+    var lane = level.lanes[i];
     for (var j = 0; j < lane.length; j++) {
-      if (lane[j].color>2) {
+      if (lane[j].color > 2) {
         lane[j].color = 2;
         return;
       }
     }
   }
-   
+
+}
+
+function refillColor(level) {
+  for (var i = 0; i < level.lanes.length; i++) {
+    var lane = level.lanes[i];
+    for (var j = 0; j < lane.length; j++) {
+      lane[j].color = lane[j].num;
+      return;
+    }
+  }
 }
 
 function shuffle(array) {
@@ -224,14 +237,15 @@ function checkLanes(level) {
     var prev = lanes[i][0].num
     for (var j = 1; j < lanes[i].length; j++) {
       var cell = lanes[i][j].num;
-      if (cell>1) 
-        doneCheck=false;
+      if (cell > 1)
+        doneCheck = false;
       if (cell > 1 && prev == cell) {
         console.log(cell)
-        lanes[i][j - 1] = {color:1,num:1};
-        lanes[i][j] = {color:1,num:1};
+        lanes[i][j - 1] = { color: 1, num: 1 };
+        lanes[i][j] = { color: 1, num: 1 };
+        refillColor(level);
+        refillColor(level);
       }
-     
       prev = cell;
     }
   }
@@ -241,10 +255,12 @@ function checkLanes(level) {
       var cell = lanes[i][j].num;
       if (cell > 1 && prev == cell) {
         console.log(cell)
-        lanes[i - 1][j] = {color:1,num:1};
-        lanes[i][j] = {color:1,num:1};
+        lanes[i - 1][j] = { color: 1, num: 1 };
+        lanes[i][j] = { color: 1, num: 1 };
+        refillColor(level);
+        refillColor(level);
       }
-      
+
       prev = cell;
     }
   }
@@ -289,9 +305,9 @@ function touchMoved() {
 }
 
 function touchEnded() {
-  removeColors(levels[currentLevel]);
+  removeColor(levels[currentLevel]);
   if (levels[currentLevel].done) {
-    levels[currentLevel] = createLevel(8,12);
+    levels[currentLevel] = createLevel(8, 12);
 
     return;
   }

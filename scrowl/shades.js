@@ -250,6 +250,7 @@ function checkLanes(level) {
         lanes[i][j] = { color: 1, num: 1 };
         refillColor(level);
         refillColor(level);
+        refillColor(level);
 
       }
       prev = cell;
@@ -263,6 +264,7 @@ function checkLanes(level) {
         console.log(cell)
         lanes[i - 1][j] = { color: 1, num: 1 };
         lanes[i][j] = { color: 1, num: 1 };
+        refillColor(level);
         refillColor(level);
         refillColor(level);
 
@@ -313,8 +315,9 @@ function touchMoved() {
 
 function touchEnded() {
   removeColor(levels[currentLevel]);
+  removeColor(levels[currentLevel]);
   if (levels[currentLevel].done) {
-    levels[currentLevel] = createLevel(8, 12);
+    levels[currentLevel] = createLevel(6, 8);
 
     return;
   }

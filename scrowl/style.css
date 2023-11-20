@@ -5,6 +5,10 @@ html, body {
   height: 100%;
   width: 100%;
   position: fixed;
+  user-select: none;
+-moz-user-select: none;
+-webkit-user-select: none;
+-ms-user-select: none;
 }
 canvas {
   display: block;
@@ -12,3 +16,4 @@ canvas {
 body {
   touch-action: none;
 }
+

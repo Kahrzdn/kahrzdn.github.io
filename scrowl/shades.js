@@ -1,6 +1,6 @@
 const colorMap = [
-  "#444444",
-  "#ffffff",
+  "#222222",
+  "#000000",
   "#999999",
   "#ffde17",
   "#21409a",
@@ -29,14 +29,14 @@ function setup() {
   wh = windowHeight;
   createCanvas(ww, ww);
 
-  levels[0] = createLevel(8, 12);
+  levels[0] = createLevel(6, 8);
 }
 
 function createLevel(numRow, numLanes) {
   const hue = 0;
   const saturation = 70 + round(random(20));
   for (var i = 3; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (10+(i*10)%80) + '%)');
+    colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30+(i*10)%70) + '%)');
   }
 
   var lanes = [];
@@ -180,7 +180,7 @@ function drawBrick(px, py, dx, dy, cell, checkRow) {
 function draw() {
 
   resizeCanvas(windowWidth, windowHeight);
-  background(0);
+  background(colorMap[0]);
   drawLevel(levels[currentLevel])
 }
 
@@ -250,6 +250,7 @@ function checkLanes(level) {
         lanes[i][j] = { color: 1, num: 1 };
         refillColor(level);
         refillColor(level);
+
       }
       prev = cell;
     }
@@ -264,6 +265,7 @@ function checkLanes(level) {
         lanes[i][j] = { color: 1, num: 1 };
         refillColor(level);
         refillColor(level);
+
       }
 
       prev = cell;

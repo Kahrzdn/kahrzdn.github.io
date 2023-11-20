@@ -22,7 +22,7 @@ var wdx;
 var wdy;
 var ww;
 var wh;
-var maxColors = 16;
+var maxColors = 26;
 
 function setup() {
   ww = windowWidth;
@@ -36,23 +36,26 @@ function createLevel(numRow, numLanes) {
   const hue = 0;
   const saturation = 70 + round(random(20));
   for (var i = 3; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + round(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + round(20 + 50 * (i) / (maxColors)) + '%)');
+    colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (10+(i*10)%80) + '%)');
   }
 
   var lanes = [];
+  var c = 3;
   for (var i = 0; i < numRow; i++) {
     lane = [];
     for (var j = 0; j < numLanes; j++) {
-      lane[j] = { color: 1, num: 1 };
+      lane[j] = {};
     }
-
     for (j = 0; j < numLanes; j += 2) {
-      const c = j + 3;
       lane[j].color = c;
       lane[j].num = c;
       lane[j + 1].color = c;
       lane[j + 1].num = c;
+      c++;
+      if (c > maxColors)
+        c = 3;
     }
+
     lanes.push(shuffle(lane));
   }
   //  transpose lanes;
@@ -92,8 +95,10 @@ function refillColor(level) {
   for (var i = 0; i < level.lanes.length; i++) {
     var lane = level.lanes[i];
     for (var j = 0; j < lane.length; j++) {
-      lane[j].color = lane[j].num;
-      return;
+      if (lane[j].color == 2) {
+        lane[j].color = lane[j].num;
+        return;
+      }
     }
   }
 }

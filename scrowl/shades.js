@@ -284,10 +284,21 @@ var laneDY = 0;
 var lanePosX = 0;
 var lanePosY = 0;
 
-function touchStarted() {
+function touchStarted(ev) {
+  if (ev.touches.length === 1) {
+    const touch = ev.touches[0];
+    if (
+      touch.clientX < window.innerWidth * 0.1 ||
+      touch.clientX > window.innerWidth * 0.9
+    ) {
+      ev.preventDefault();
+    }
+else {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
   resizeCanvas(windowWidth, windowHeight);
+}
+}
 }
 
 function touchMoved() {

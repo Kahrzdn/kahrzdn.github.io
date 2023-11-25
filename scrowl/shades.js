@@ -1,19 +1,8 @@
-const colorMap = [
+var colorMap = [
   "#020202",
   "#000000",
   "#999999",
-  "#ffde17",
-  "#21409a",
-  "#ff0000",
-  "#ffa500",
-  "#ffff00",
-  "#008000",
-  "#0000ff",
-  "#4b0082",
-  "#ee82ee"
 ]
-
-//test
 
 var levels = []
 
@@ -362,20 +351,10 @@ function touchEnded() {
 
 function touchHandler(event) {
   if (event.touches.length > 1) {
-    //the event is multi-touch
-    //you can then prevent the behavior
     event.preventDefault()
   }
 }
 
-/*
-function mousePressed(event) {
-  if (mouseX > 0 && mouseX < 10 && mouseY > 0 && mouseY < 10) {
-    let fs = fullscreen();
-    fullscreen(!fs);
-  }
-  return false;
-}*/
 
 document.ontouchmove = function (event) {
   event.preventDefault();

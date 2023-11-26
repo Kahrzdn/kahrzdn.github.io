@@ -22,16 +22,18 @@ function setup() {
 }
 
 function createLevel(numRow, numLanes) {
+  var m=constructProblem(numRow, numLanes)
+
   const hue = 0;
   const saturation = 70 + round(random(20));
   for (var i = 3; i <= maxColors; i++) {
-    colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30+(i*10)%70) + '%)');
+    colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30 + (i * 10) % 70) + '%)');
   }
 
   var lanes = [];
   var c = 3;
   for (var i = 0; i < numRow; i++) {
-    lane = [];
+    var lane = [];
     for (var j = 0; j < numLanes; j++) {
       lane[j] = {};
     }
@@ -55,6 +57,7 @@ function createLevel(numRow, numLanes) {
   for (var i = 0; i < lanes.length; i++) {
     lanes[i] = arrayRotateColNum(lanes[i], floor(random(lanes[i].length)));
   }
+  lanes = m;
   var checkRows = [];
   for (let i = 0; i < numRow; i++) {
     checkRows[i] = { check: false };
@@ -64,8 +67,105 @@ function createLevel(numRow, numLanes) {
   if (level.done) {
     level = createLevel(numRow, numLanes);
   }
+
+
   return level;
 }
+
+function constructProblem(numRow, numLanes) {
+  var lanes = [];
+  for (var i = 0; i < numLanes; i++) {
+    var lane = [];
+    for (var j = 0; j < numRow; j++) {
+      lane[j] = { num: 1, color:1 };
+    }
+    lanes.push(lane);
+  }
+  var succes;
+  for (var n = 0; n < 100; n++) {
+    succes = true;
+    if (constructNextMatch(lanes, numRow, numLanes, 3))
+      break;
+    succes = false;
+  }
+
+  if (!succes)
+    console.log("not possible")
+
+  return lanes;
+}
+
+function constructNextMatch(matrix, numRow, numLanes, color) {
+
+  if (color > maxColors)
+    return true;
+  var spot = [];
+  if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
+    maxColors=color - 1;
+    return false;
+  }
+    
+  insertTiles(matrix, spot, color);
+  logMatrix(matrix);
+  shiftTiles(matrix, numRow, numLanes, spot);
+  color = color+1;
+  return constructNextMatch(matrix, numRow, numLanes, color);
+}
+
+function tryfindTwinSpot(lanes, numRow, numLanes, spot) {
+  for (var i = 0; i < 200; i++) {
+    x = floor(random(numLanes - 1));
+    y = floor(random(numRow - 1));
+    if (!lanes[x][y].num == 1)
+      continue;
+      spot[0] = { x: x, y: y };
+    if (lanes[x + 1][y].num == 1) {
+      spot[1] = { x: x + 1, y: y };
+      return true;
+    }
+    if (lanes[x][y + 1].num == 1) {
+      spot[1] = { x: x, y: y + 1 };
+      return true;
+    }
+  }
+  return false;
+}
+
+function insertTiles(lanes, spot, color) {
+  lanes[spot[0].x][spot[0].y] = { color: color, num: color };
+  lanes[spot[1].x][spot[1].y] = { color: color, num: color };
+}
+
+function shiftTiles(lanes, numRow, numLanes, spot) {
+  //spot is vertical, so move horz aka interlane
+  if (spot[0].x == spot[1].x) {
+    arrayRotateRowNum(lanes, spot[0].y,floor(1+random(numRow-2)));
+    return;
+  }
+  if (spot[0].y == spot[1].y) {
+    arrayRotateColNum(lanes[spot[0].x], floor(1+random(numLanes-2)));
+    return;
+  }
+  //hmmmm
+  console.log("spooky spot");
+  console.log(spot)
+}
+
+function logMatrix(lanes) {
+  var n=0;
+  console.log("vvvvvvvvvvvvvvvvvvvvvvvv")
+  for (var i = 0; i < lanes[0].length; i++) {
+    var str = "";
+    for (var j = 0; j < lanes.length; j++) {
+      str += " " + String(lanes[j][i].num).padStart(2, '0');;
+    }
+    console.log(n+str)
+    n++;
+  }
+  console.log("^^^^^^^^^^^^^^^^^^^^^^^^")
+  console.log("              ")
+}
+
 
 function removeColor(level) {
   for (var i = 0; i < level.lanes.length; i++) {
@@ -193,9 +293,9 @@ function arrayRotateCol(arr, reverse) {
   return arr;
 }
 
-function arrayRotateRowNum(arr, num) {
+function arrayRotateRowNum(arr, row, num) {
   for (var i = 0; i < num; i++) {
-    arr = arrayRotateRow(arr, false);
+    arr = arrayRotateRow(arr, row, false);
   }
   return arr;
 }

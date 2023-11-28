@@ -2,6 +2,7 @@ var colorMap = [
   "#020202",
   "#000000",
   "#999999",
+  "#ffffff"
 ]
 
 var levels = []
@@ -12,6 +13,8 @@ var wdy;
 var ww;
 var wh;
 var maxColors = 26;
+var scoreHeight;
+var score = { current: 10, max: 10 };
 
 function setup() {
   ww = windowWidth;
@@ -26,12 +29,12 @@ function createLevel(numRow, numLanes) {
 
   const hue = 0;
   const saturation = 70 + round(random(20));
-  for (var i = 3; i <= maxColors; i++) {
+  for (var i = 4; i <= maxColors; i++) {
     colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30 + (i * 10) % 70) + '%)');
   }
 
   var lanes = [];
-  var c = 3;
+  var c = 4;
   for (var i = 0; i < numRow; i++) {
     var lane = [];
     for (var j = 0; j < numLanes; j++) {
@@ -44,7 +47,7 @@ function createLevel(numRow, numLanes) {
       lane[j + 1].num = c;
       c++;
       if (c > maxColors)
-        c = 3;
+        c = 4;
     }
 
     lanes.push(shuffle(lane));
@@ -62,8 +65,11 @@ function createLevel(numRow, numLanes) {
   for (let i = 0; i < numRow; i++) {
     checkRows[i] = { check: false };
   }
-  var level = { lanes: lanes, checkRows }
+  var level = { lanes: lanes, checkRows,score:{ current: round(maxColors/4), max: round(maxColors/2) }} ;
+  console.log(level.score)
   checkLanes(level);
+  level.score.current= round(maxColors/4);
+  console.log(level.score)
   if (level.done) {
     level = createLevel(numRow, numLanes);
   }
@@ -73,19 +79,24 @@ function createLevel(numRow, numLanes) {
 }
 
 function constructProblem(numRow, numLanes) {
-  var lanes = [];
-  for (var i = 0; i < numLanes; i++) {
-    var lane = [];
-    for (var j = 0; j < numRow; j++) {
-      lane[j] = { num: 1, color: 1 };
+  const orgMaxColors = maxColors;
+  for (var n = 0; n < 9000; n++) {
+    maxColors = orgMaxColors;
+    var lanes = [];
+    for (var i = 0; i < numLanes; i++) {
+      var lane = [];
+      for (var j = 0; j < numRow; j++) {
+        lane[j] = { num: 1, color: 1 };
+      }
+      lanes.push(lane);
     }
-    lanes.push(lane);
-  }
-  var succes;
-  for (var n = 0; n < 1; n++) {
-    succes = true;
-    if (constructNextMatch(lanes, numRow, numLanes, 3))
+    var succes = true;
+
+    if (constructNextMatch(lanes, numRow, numLanes, 4)) {
       break;
+
+      console.log("maxcolors " + maxColors)
+    }
     succes = false;
   }
 
@@ -97,21 +108,24 @@ function constructProblem(numRow, numLanes) {
 
 function constructNextMatch(matrix, numRow, numLanes, color) {
 
-  if (color > maxColors)
+  if (color > maxColors) {
+    console.log("success")
     return true;
+  }
+
   var spot = [{}, {}];
   if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
     maxColors = color - 1;
     console.log(color + "give up")
     return false;
   }
-  logMatrix(matrix);
-  console.log(spot);
+  // logMatrix(matrix);
+  // console.log(spot);
   insertTiles(matrix, spot, color);
-  logMatrix(matrix);
+  // logMatrix(matrix);
   shiftTiles(matrix, numRow, numLanes, spot);
   color = color + 1;
-  console.log("next:"+color)
+  //console.log("next:" + color)
   return constructNextMatch(matrix, numRow, numLanes, color);
 }
 
@@ -130,9 +144,9 @@ function tryfindTwinSpot(lanes, numRow, numLanes, spot) {
         return true;
       }
     }
-    console.log("end")
+    //console.log("end")
   }
-  console.log("last: " + i);
+  //console.log("last: " + i);
   return false;
 }
 
@@ -203,12 +217,27 @@ function shuffle(array) {
 
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
-  wdy = window.innerHeight / level.lanes[0].length;
+  scoreHeight = window.innerHeight / 18;
+  wdy = (window.innerHeight - scoreHeight) / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
       drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
     else
       drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows);
+  }
+  drawScore(level.score);
+}
+
+function drawScore(score) {
+  for (var i = 0; i < score.max; i++) {
+    var x = i * window.innerWidth / score.max;
+    var y = scoreHeight * 0.1;
+    if (score.current >= score.max-i) {
+      fill(0, 0, 0, 80);
+      rect(x + 0.1 * window.innerWidth / score.max, y + 0.1 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max,0.1 * window.innerWidth / score.max);
+      fill(colorMap[3]);
+      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8*window.innerWidth / score.max,0.1 * window.innerWidth / score.max) ;
+    }
   }
 }
 
@@ -342,6 +371,7 @@ function checkLanes(level) {
         console.log(cell)
         lanes[i][j - 1] = { color: 1, num: 1 };
         lanes[i][j] = { color: 1, num: 1 };
+        level.score.current++;
         refillColor(level);
         refillColor(level);
         refillColor(level);
@@ -358,6 +388,7 @@ function checkLanes(level) {
         console.log(cell)
         lanes[i - 1][j] = { color: 1, num: 1 };
         lanes[i][j] = { color: 1, num: 1 };
+        level.score.current++;
         refillColor(level);
         refillColor(level);
         refillColor(level);
@@ -381,6 +412,7 @@ var lanePosY = 0;
 function touchStarted(ev) {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
+  levels[currentLevel].score.current--;
   resizeCanvas(windowWidth, windowHeight);
   ev.preventDefault();
 
@@ -411,8 +443,8 @@ function touchMoved() {
 }
 
 function touchEnded() {
-  removeColor(levels[currentLevel]);
-  removeColor(levels[currentLevel]);
+  //removeColor(levels[currentLevel]);
+  //removeColor(levels[currentLevel]);
   if (levels[currentLevel].done) {
     levels[currentLevel] = createLevel(6, 8);
 

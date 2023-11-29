@@ -70,7 +70,7 @@ function createLevel(numRow, numLanes) {
   console.log(level.score)
   checkLanes(level);
   console.log(level.score)
-  level.score.current = round(maxColors / 4);
+  level.score.current = 0;//round(maxColors / 4);
 
   if (level.done) {
     level = createLevel(numRow, numLanes);
@@ -244,7 +244,7 @@ function drawScore(score) {
     stroke(colorMap[3]);
     rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
 
-    if (score.current >= score.max - i) {
+    if (score.current >  i) {
       fill(0, 0, 0, 80);
       rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
       fill(colorMap[3]);
@@ -382,7 +382,7 @@ function checkLanes(level) {
           console.log(cell)
           lanes[i][j - 1] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current++;
+          level.score.current=+2;
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -405,7 +405,7 @@ function checkLanes(level) {
           console.log(cell)
           lanes[i - 1][j] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current++;
+          level.score.current+=2;
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -433,7 +433,7 @@ var lanePosY = 0;
 function touchStarted(ev) {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
-  levels[currentLevel].score.current--;
+  
   resizeCanvas(windowWidth, windowHeight);
   ev.preventDefault();
 
@@ -467,10 +467,13 @@ function touchEnded() {
   //removeColor(levels[currentLevel]);
   //removeColor(levels[currentLevel]);
 
-  var deltaX = round((mouseX - mousepos.x) / wdx);
+  const deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
 
+  if (deltaX!=0 || deltaY!=0) {
+    levels[currentLevel].score.current--;
+  }
 
   if (abs(deltaX) > abs(deltaY)) {
     if (deltaX < 0) {

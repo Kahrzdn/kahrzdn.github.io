@@ -25,7 +25,7 @@ function setup() {
 }
 
 function createLevel(numRow, numLanes) {
-  var m = constructProblem(numRow, numLanes)
+  var lanes = constructProblem(numRow, numLanes)
 
   const hue = 0;
   const saturation = 70 + round(random(20));
@@ -33,7 +33,7 @@ function createLevel(numRow, numLanes) {
     colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30 + (i * 10) % 70) + '%)');
   }
 
-  var lanes = [];
+ /* var lanes = [];
   var c = 4;
   for (var i = 0; i < numRow; i++) {
     var lane = [];
@@ -61,15 +61,17 @@ function createLevel(numRow, numLanes) {
     lanes[i] = arrayRotateColNum(lanes[i], floor(random(lanes[i].length)));
   }
   lanes = m;
+  */
   var checkRows = [];
   for (let i = 0; i < numRow; i++) {
     checkRows[i] = { check: false };
   }
-  var level = { lanes: lanes, checkRows,score:{ current: round(maxColors/4), max: round(maxColors/2) }} ;
+  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: round(maxColors / 2) } };
   console.log(level.score)
   checkLanes(level);
-  level.score.current= round(maxColors/4);
   console.log(level.score)
+  level.score.current = round(maxColors / 4);
+
   if (level.done) {
     level = createLevel(numRow, numLanes);
   }
@@ -80,7 +82,7 @@ function createLevel(numRow, numLanes) {
 
 function constructProblem(numRow, numLanes) {
   const orgMaxColors = maxColors;
-  for (var n = 0; n < 9000; n++) {
+  for (var n = 0; n < 900; n++) {
     maxColors = orgMaxColors;
     var lanes = [];
     for (var i = 0; i < numLanes; i++) {
@@ -115,8 +117,9 @@ function constructNextMatch(matrix, numRow, numLanes, color) {
 
   var spot = [{}, {}];
   if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
-    maxColors = color - 1;
+    //maxColors = color - 1;
     console.log(color + "give up")
+    logMatrix(matrix)
     return false;
   }
   // logMatrix(matrix);
@@ -130,24 +133,27 @@ function constructNextMatch(matrix, numRow, numLanes, color) {
 }
 
 function tryfindTwinSpot(lanes, numRow, numLanes, spot) {
-  for (var i = 0; i < 500; i++) {
-    x = floor(random(numLanes - 1));
-    y = floor(random(numRow - 1));
-    if (lanes[x][y].num == 1) {
-      spot[0] = { x: x, y: y };
-      if (lanes[x + 1][y].num == 1) {
-        spot[1] = { x: x + 1, y: y };
-        return true;
-      }
-      if (lanes[x][y + 1].num == 1) {
-        spot[1] = { x: x, y: y + 1 };
-        return true;
+  var spotList = [];
+  for (var x = 0; x < numLanes; x++) {
+    for (var y = 0; y < numRow; y++) {
+      if (lanes[x][y].num == 1) {
+        if (x+1<numLanes && lanes[x + 1][y].num == 1) {
+          spotList.push([{ x: x, y: y }, { x: x + 1, y: y }]);
+        }
+        if (y+1<numRow && lanes[x][y + 1].num == 1) {
+          spotList.push([{ x: x, y: y }, { x: x, y: y + 1 }]);
+        }
       }
     }
-    //console.log("end")
   }
-  //console.log("last: " + i);
-  return false;
+
+  if (spotList.length==0)
+    return false;
+
+  const spotCand = spotList[floor(random(spotList.length))];
+  spot[0]=spotCand[0];
+  spot[1]=spotCand[1];
+  return true;
 }
 
 function insertTiles(lanes, spot, color) {
@@ -232,11 +238,11 @@ function drawScore(score) {
   for (var i = 0; i < score.max; i++) {
     var x = i * window.innerWidth / score.max;
     var y = scoreHeight * 0.1;
-    if (score.current >= score.max-i) {
+    if (score.current >= score.max - i) {
       fill(0, 0, 0, 80);
-      rect(x + 0.1 * window.innerWidth / score.max, y + 0.1 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max,0.1 * window.innerWidth / score.max);
+      rect(x + 0.1 * window.innerWidth / score.max, y + 0.1 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.1 * window.innerWidth / score.max);
       fill(colorMap[3]);
-      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8*window.innerWidth / score.max,0.1 * window.innerWidth / score.max) ;
+      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.1 * window.innerWidth / score.max);
     }
   }
 }

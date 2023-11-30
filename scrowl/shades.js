@@ -14,7 +14,7 @@ var ww;
 var wh;
 var maxColors = 26;
 var scoreHeight;
-var score = { current: 10, max: 10 };
+var score = { current: 10, max: 20 };
 
 function setup() {
   ww = windowWidth;
@@ -66,7 +66,7 @@ function createLevel(numRow, numLanes) {
   for (let i = 0; i < numRow; i++) {
     checkRows[i] = { check: false };
   }
-  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: round(maxColors / 2) } };
+  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: maxColors } };
   console.log(level.score)
   checkLanes(level);
   console.log(level.score)

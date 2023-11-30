@@ -238,13 +238,14 @@ function drawScore(score) {
   for (var i = 0; i < score.max; i++) {
     var x = 3 + i * window.innerWidth / score.max;
     var y = scoreHeight;
-    noFill();
-    stroke(0, 0, 0, 80);
-    rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
-    stroke(colorMap[3]);
-    rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
-
+   
     if (score.current >  i) {
+      noFill();
+      stroke(0, 0, 0, 80);
+      rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
+      stroke(colorMap[3]);
+      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
+  
       fill(0, 0, 0, 80);
       rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
       fill(colorMap[3]);

@@ -470,7 +470,7 @@ function touchEnded() {
 
 
   if (deltaX!=0 || deltaY!=0) {
-    levels[currentLevel].score.current=-2;
+    levels[currentLevel].score.current-=2;
     console.log(levels[currentLevel].score.current)
   }
 

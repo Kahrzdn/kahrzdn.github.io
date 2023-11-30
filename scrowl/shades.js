@@ -377,7 +377,7 @@ function checkLanes(level) {
           console.log(cell)
           lanes[i][j - 1] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current+=2;
+          level.score.current+=3;
           console.log("1: +2 "+i + " "+ j + " "+ level.score.current);
           refillColor(level);
           refillColor(level);
@@ -401,7 +401,7 @@ function checkLanes(level) {
           console.log(cell)
           lanes[i - 1][j] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current+=2;
+          level.score.current+=3;
           console.log("2: +2 "+i + " "+ j + " "+ level.score.current);
 
           refillColor(level);
@@ -470,7 +470,7 @@ function touchEnded() {
 
 
   if (deltaX!=0 || deltaY!=0) {
-    levels[currentLevel].score.current--;
+    levels[currentLevel].score.current=-2;
     console.log(levels[currentLevel].score.current)
   }
 

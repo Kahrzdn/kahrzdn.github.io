@@ -223,8 +223,8 @@ function shuffle(array) {
 
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
-  scoreHeight = window.innerHeight*0.95  ;
-  wdy = (window.innerHeight*0.9) / level.lanes[0].length;
+  scoreHeight = window.innerHeight*0.96  ;
+  wdy = (window.innerHeight*0.95) / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
       drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
@@ -240,14 +240,8 @@ function drawScore(score) {
     var y = scoreHeight;
    
     if (score.current >  i) {
-      noFill();
-      stroke(0, 0, 0, 80);
-      rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
-      stroke(colorMap[3]);
-      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
-  
       fill(0, 0, 0, 80);
-      rect(x + 0.04 * window.innerWidth / score.max, y + 0.04 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
+      rect(x + 0.06 * window.innerWidth / score.max, y + 0.06 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
       fill(colorMap[3]);
       rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
     }

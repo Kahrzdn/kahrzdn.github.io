@@ -33,43 +33,9 @@ function createLevel(numRow, numLanes) {
     colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30 + (i * 10) % 70) + '%)');
   }
 
-  /* var lanes = [];
-   var c = 4;
-   for (var i = 0; i < numRow; i++) {
-     var lane = [];
-     for (var j = 0; j < numLanes; j++) {
-       lane[j] = {};
-     }
-     for (j = 0; j < numLanes; j += 2) {
-       lane[j].color = c;
-       lane[j].num = c;
-       lane[j + 1].color = c;
-       lane[j + 1].num = c;
-       c++;
-       if (c > maxColors)
-         c = 4;
-     }
- 
-     lanes.push(shuffle(lane));
-   }
-   //  transpose lanes;
-   lanes = lanes.reduce((prev, next) =>
-     next.map((item, i) =>
-       (prev[i] || []).concat(next[i])
-     ), []);
-   for (var i = 0; i < lanes.length; i++) {
-     lanes[i] = arrayRotateColNum(lanes[i], floor(random(lanes[i].length)));
-   }
-   lanes = m;
-   */
-  var checkRows = [];
-  for (let i = 0; i < numRow; i++) {
-    checkRows[i] = { check: false };
-  }
-  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: maxColors, row: [] } };
-  console.log(level.score)
+
+  var level = { lanes: lanes, score: { current: round(maxColors / 4), max: maxColors, row: [] } };
   checkLanes(level);
-  console.log(level.score)
   level.score.current = 0;//round(maxColors / 4);
 
   if (level.done) {
@@ -96,8 +62,6 @@ function constructProblem(numRow, numLanes) {
 
     if (constructNextMatch(lanes, numRow, numLanes, 4)) {
       break;
-
-      console.log("maxcolors " + maxColors)
     }
     succes = false;
   }
@@ -111,24 +75,17 @@ function constructProblem(numRow, numLanes) {
 function constructNextMatch(matrix, numRow, numLanes, color) {
 
   if (color > maxColors) {
-    console.log("success")
     return true;
   }
 
   var spot = [{}, {}];
   if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
-    //maxColors = color - 1;
-    console.log(color + "give up")
     logMatrix(matrix)
     return false;
   }
-  // logMatrix(matrix);
-  // console.log(spot);
   insertTiles(matrix, spot, color);
-  // logMatrix(matrix);
   shiftTiles(matrix, numRow, numLanes, spot);
   color = color + 1;
-  //console.log("next:" + color)
   return constructNextMatch(matrix, numRow, numLanes, color);
 }
 
@@ -171,9 +128,6 @@ function shiftTiles(lanes, numRow, numLanes, spot) {
     arrayRotateColNum(lanes[spot[0].x], floor(1 + random(numLanes - 2)));
     return;
   }
-  //hmmmm
-  console.log("spooky spot");
-  console.log(spot)
 }
 
 function logMatrix(lanes) {
@@ -227,9 +181,9 @@ function drawLevel(level) {
   wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
-      drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
+      drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i])
     else
-      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i], level.checkRows);
+      drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i]);
   }
   drawScore(level.score);
 }
@@ -242,68 +196,40 @@ function drawScore(score) {
     if (score.current > i) {
       fill(0, 0, 0, 80);
       rect(x + 0.06 * window.innerWidth / score.max, y + 0.06 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
-      fill(colorMap[4 + (i%(maxColors-4))]);
+      fill(colorMap[4 + (i % (maxColors - 4))]);
       rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
     }
   }
 }
 
-function drawLane(place, lanesNum, dx, dy, lane, checkRows) {
+function drawLane(place, lanesNum, dx, dy, lane) {
   for (var i = 0; i < lane.length; i++) {
     var ddx = 0;
     if (i == lanePosY) {
       ddx = dx;
     }
-    drawBrick(place, i, ddx, dy, lane[i], checkRows[i]);
+    drawBrick(place, i, ddx, dy, lane[i]);
     if (dy > 0) {
-      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i], checkRows[i])
+      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i])
     }
     if (dy < 0) {
-      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i], checkRows[i])
+      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i])
     }
     if (ddx > 0) {
-      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i])
     }
     if (ddx < 0) {
-      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i], checkRows[i])
+      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i])
     }
-
   }
 }
 
-function drawBrick(px, py, dx, dy, cell, checkRow) {
+function drawBrick(px, py, dx, dy, cell) {
   col = color(colorMap[cell.color]);
   noStroke();
-  if (checkRow.check) {
-    console.log(checkRow);
-    const checkDur = new Date().getTime() - checkRow.time;
-    angle = 0 - checkDur / 100 - 0.5 * py - 2 * px;
-    if (angle > -3 * PI || angle < -5 * PI)
-      angle = -3 * PI;
+  fill(col);
+  rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4, 5);
 
-    const fy = wdy * sin(angle) / 8;
-
-    const fx = wdx * (1 + cos(angle)) / 4;
-    const indentx = -0.5
-    const indenty = 1
-
-    fill(col);
-
-    const x1 = +indentx + px * wdx + dx + fx;
-    const y1 = +indenty + py * wdy + dy + fy;
-    const x2 = -indentx + px * wdx + dx - fx + wdx;
-    const y2 = +indenty + py * wdy + dy - fy;
-    const x3 = -indentx + px * wdx + dx - fx + wdx;
-    const y3 = -indenty + py * wdy + dy + fy + wdy;
-    const x4 = +indentx + px * wdx + dx + fx;
-    const y4 = -indenty + py * wdy + dy - fy + wdy;
-    quad(x1, y1, x2, y2, x3, y3, x4, y4);
-
-  }
-  else {
-    fill(col);
-    rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4, 5);
-  }
 
 }
 
@@ -374,13 +300,10 @@ function checkLanes(level) {
       var cell = lanes[i][j].num;
       if (cell > 1) {
         if (prev == cell) {
-          console.log(cell)
           level.score.row.push(lanes[i][j].num);
           lanes[i][j - 1] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
           level.score.current += 3;
-
-          console.log("1: +2 " + i + " " + j + " " + level.score.current);
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -400,13 +323,10 @@ function checkLanes(level) {
       var cell = lanes[i][j].num;
       if (cell > 1) {
         if (prev == cell) {
-          console.log(cell)
           level.score.row.push(lanes[i][j].num);
           lanes[i - 1][j] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
           level.score.current += 3;
-          console.log("2: +2 " + i + " " + j + " " + level.score.current);
-
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -474,7 +394,6 @@ function touchEnded() {
 
   if (deltaX != 0 || deltaY != 0) {
     levels[currentLevel].score.current -= 2;
-    console.log(levels[currentLevel].score.current)
   }
 
   if (abs(deltaX) > abs(deltaY)) {
@@ -506,7 +425,6 @@ function touchEnded() {
   laneDY = 0;
   checkLanes(levels[currentLevel]);
 
-  console.log(levels[currentLevel])
   if (levels[currentLevel].done) {
     levels[currentLevel] = createLevel(6, 8);
 

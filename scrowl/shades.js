@@ -14,7 +14,7 @@ var ww;
 var wh;
 var maxColors = 26;
 var scoreHeight;
-var score = { current: 10, max: 20 };
+var score = { current: 10, max: 20, row: [] };
 
 function setup() {
   ww = windowWidth;
@@ -66,7 +66,7 @@ function createLevel(numRow, numLanes) {
   for (let i = 0; i < numRow; i++) {
     checkRows[i] = { check: false };
   }
-  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: maxColors } };
+  var level = { lanes: lanes, checkRows, score: { current: round(maxColors / 4), max: maxColors, row: [] } };
   console.log(level.score)
   checkLanes(level);
   console.log(level.score)
@@ -223,8 +223,8 @@ function shuffle(array) {
 
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
-  scoreHeight = window.innerHeight*0.96  ;
-  wdy = (window.innerHeight*0.95) / level.lanes[0].length;
+  scoreHeight = window.innerHeight * 0.96;
+  wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
       drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i], level.checkRows)
@@ -238,12 +238,12 @@ function drawScore(score) {
   for (var i = 0; i < score.max; i++) {
     var x = 3 + i * window.innerWidth / score.max;
     var y = scoreHeight;
-   
-    if (score.current >  i) {
+
+    if (score.current > i) {
       fill(0, 0, 0, 80);
-      rect(x + 0.06 * window.innerWidth / score.max, y + 0.06 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
-      fill(colorMap[3]);
-      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth);
+      rect(x + 0.06 * window.innerWidth / score.max, y + 0.06 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
+      fill(colorMap[4 + (i%(maxColors-4))]);
+      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
     }
   }
 }
@@ -302,7 +302,7 @@ function drawBrick(px, py, dx, dy, cell, checkRow) {
   }
   else {
     fill(col);
-    rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4);
+    rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4, 5);
   }
 
 }
@@ -375,10 +375,12 @@ function checkLanes(level) {
       if (cell > 1) {
         if (prev == cell) {
           console.log(cell)
+          level.score.row.push(lanes[i][j].num);
           lanes[i][j - 1] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current+=3;
-          console.log("1: +2 "+i + " "+ j + " "+ level.score.current);
+          level.score.current += 3;
+
+          console.log("1: +2 " + i + " " + j + " " + level.score.current);
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -399,10 +401,11 @@ function checkLanes(level) {
       if (cell > 1) {
         if (prev == cell) {
           console.log(cell)
+          level.score.row.push(lanes[i][j].num);
           lanes[i - 1][j] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current+=3;
-          console.log("2: +2 "+i + " "+ j + " "+ level.score.current);
+          level.score.current += 3;
+          console.log("2: +2 " + i + " " + j + " " + level.score.current);
 
           refillColor(level);
           refillColor(level);
@@ -431,7 +434,7 @@ var lanePosY = 0;
 function touchStarted(ev) {
   mousepos.x = mouseX;
   mousepos.y = mouseY;
-  
+
   resizeCanvas(windowWidth, windowHeight);
   ev.preventDefault();
 
@@ -469,8 +472,8 @@ function touchEnded() {
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
 
-  if (deltaX!=0 || deltaY!=0) {
-    levels[currentLevel].score.current-=2;
+  if (deltaX != 0 || deltaY != 0) {
+    levels[currentLevel].score.current -= 2;
     console.log(levels[currentLevel].score.current)
   }
 

@@ -142,7 +142,7 @@ function drawCell(px, py, dx, dy, cell) {
 function drawSymbol(px, py, dx, dy, symbol) {
   //rocket
   if (symbol.rocket) {
-    drawArrow(symbol.direction)0
+    drawArrow(symbol.direction)
 
   }
 }

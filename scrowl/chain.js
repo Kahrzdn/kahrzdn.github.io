@@ -1,6 +1,6 @@
 var colorMap = [
+  "#2f2f2f",
   "#020202",
-  "#000000",
   "#999999",
   "#ffffff"
 ]
@@ -33,102 +33,31 @@ function createLevel(numRow, numLanes) {
     colorMap[i] = color('hsl(' + floor(hue + (360 / maxColors) * i) + ', ' + saturation + '%, ' + (30 + (i * 10) % 70) + '%)');
   }
 
-
-  var level = { lanes: lanes, score: { current: round(maxColors / 4), max: maxColors, row: [] } };
-  checkLanes(level);
-  level.score.current = 0;//round(maxColors / 4);
-
-  if (level.done) {
-    level = createLevel(numRow, numLanes);
-  }
-
+  var level = { lanes: lanes, score: { current: 0, max: 12 } };
 
   return level;
 }
 
 function constructProblem(numRow, numLanes) {
-  const orgMaxColors = maxColors;
-  for (var n = 0; n < 900; n++) {
-    maxColors = orgMaxColors;
-    var lanes = [];
-    for (var i = 0; i < numLanes; i++) {
-      var lane = [];
-      for (var j = 0; j < numRow; j++) {
-        lane[j] = { num: 1, color: 1 };
-      }
-      lanes.push(lane);
+  var lanes = [];
+  for (var i = 0; i < numLanes; i++) {
+    var lane = [];
+    for (var j = 0; j < numRow; j++) {
+      lane[j] = { num: 1, color: 1 };
     }
-    var succes = true;
-
-    if (constructNextMatch(lanes, numRow, numLanes, 4)) {
-      break;
-    }
-    succes = false;
+    lanes.push(lane);
   }
-
-  if (!succes)
-    console.log("not possible")
 
   return lanes;
 }
 
-function constructNextMatch(matrix, numRow, numLanes, color) {
-
-  if (color > maxColors) {
-    return true;
-  }
-
-  var spot = [{}, {}];
-  if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
-    logMatrix(matrix)
-    return false;
-  }
-  insertTiles(matrix, spot, color);
-  shiftTiles(matrix, numRow, numLanes, spot);
-  color = color + 1;
-  return constructNextMatch(matrix, numRow, numLanes, color);
-}
-
-function tryfindTwinSpot(lanes, numRow, numLanes, spot) {
-  var spotList = [];
-  for (var x = 0; x < numLanes; x++) {
-    for (var y = 0; y < numRow; y++) {
-      if (lanes[x][y].num == 1) {
-        if (x + 1 < numLanes && lanes[x + 1][y].num == 1) {
-          spotList.push([{ x: x, y: y }, { x: x + 1, y: y }]);
-        }
-        if (y + 1 < numRow && lanes[x][y + 1].num == 1) {
-          spotList.push([{ x: x, y: y }, { x: x, y: y + 1 }]);
-        }
-      }
-    }
-  }
-
-  if (spotList.length == 0)
-    return false;
-
-  const spotCand = spotList[floor(random(spotList.length))];
-  spot[0] = spotCand[0];
-  spot[1] = spotCand[1];
-  return true;
-}
 
 function insertTiles(lanes, spot, color) {
   lanes[spot[0].x][spot[0].y] = { color: color, num: color };
   lanes[spot[1].x][spot[1].y] = { color: color, num: color };
 }
 
-function shiftTiles(lanes, numRow, numLanes, spot) {
-  //spot is vertical, so move horz aka interlane
-  if (spot[0].x == spot[1].x) {
-    arrayRotateRowNum(lanes, spot[0].y, floor(1 + random(numRow - 2)));
-    return;
-  }
-  if (spot[0].y == spot[1].y) {
-    arrayRotateColNum(lanes[spot[0].x], floor(1 + random(numLanes - 2)));
-    return;
-  }
-}
+
 
 function logMatrix(lanes) {
   var n = 0;
@@ -189,17 +118,7 @@ function drawLevel(level) {
 }
 
 function drawScore(score) {
-  for (var i = 0; i < score.max; i++) {
-    var x = 3 + i * window.innerWidth / score.max;
-    var y = scoreHeight;
-
-    if (score.current > i) {
-      fill(0, 0, 0, 80);
-      rect(x + 0.06 * window.innerWidth / score.max, y + 0.06 * window.innerWidth / score.max, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
-      fill(colorMap[4 + (i % (maxColors - 4))]);
-      rect(x + 0.0 * window.innerWidth / score.max, y, 0.8 * window.innerWidth / score.max, 0.02 * window.innerWidth, 2);
-    }
-  }
+  
 }
 
 function drawLane(place, lanesNum, dx, dy, lane) {
@@ -208,30 +127,26 @@ function drawLane(place, lanesNum, dx, dy, lane) {
     if (i == lanePosY) {
       ddx = dx;
     }
-    drawBrick(place, i, ddx, dy, lane[i]);
-    if (dy > 0) {
-      drawBrick(place, i, 0, -lane.length * wdy + dy, lane[i])
-    }
-    if (dy < 0) {
-      drawBrick(place, i, 0, lane.length * wdy + dy, lane[i])
-    }
-    if (ddx > 0) {
-      drawBrick(place, i, -lanesNum * wdx + ddx, 0, lane[i])
-    }
-    if (ddx < 0) {
-      drawBrick(place, i, lanesNum * wdx + ddx, 0, lane[i])
-    }
+    drawCell(place, i, ddx, dy, lane[i]);
   }
 }
 
-function drawBrick(px, py, dx, dy, cell) {
+function drawCell(px, py, dx, dy, cell) {
   col = color(colorMap[cell.color]);
   noStroke();
   fill(col);
   rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4, 5);
-
-
+  drawSymbol(px, py, dx, dy, cell.symbol);
 }
+
+function drawSymbol(px, py, dx, dy, symbol) {
+  //rocket
+  if (symbol.rocket) {
+    drawArrow(symbol.direction)0
+
+  }
+}
+
 
 function draw() {
 
@@ -290,58 +205,7 @@ function arrayRotateRow(arr, row, reverse) {
 
 
 function checkLanes(level) {
-  var lanes = level.lanes;
-  var doneCheck = true;
-
-  var sl = "";
-  for (var i = 0; i < lanes.length; i++) {
-    var prev = lanes[i][0].num
-    for (var j = 1; j < lanes[i].length; j++) {
-      var cell = lanes[i][j].num;
-      if (cell > 1) {
-        if (prev == cell) {
-          level.score.row.push(lanes[i][j].num);
-          lanes[i][j - 1] = { color: 1, num: 1 };
-          lanes[i][j] = { color: 1, num: 1 };
-          level.score.current += 3;
-          refillColor(level);
-          refillColor(level);
-          refillColor(level);
-
-        }
-        else {
-          doneCheck = false;
-        }
-      }
-
-      prev = cell;
-    }
-  }
-  for (var j = 0; j < lanes[0].length; j++) {
-    var prev = lanes[0][j].num
-    for (var i = 1; i < lanes.length; i++) {
-      var cell = lanes[i][j].num;
-      if (cell > 1) {
-        if (prev == cell) {
-          level.score.row.push(lanes[i][j].num);
-          lanes[i - 1][j] = { color: 1, num: 1 };
-          lanes[i][j] = { color: 1, num: 1 };
-          level.score.current += 3;
-          refillColor(level);
-          refillColor(level);
-          refillColor(level);
-        }
-        else {
-          doneCheck = false;
-        }
-
-      }
-
-      prev = cell;
-    }
-  }
-
-  level.done = doneCheck;
+  
 
 }
 

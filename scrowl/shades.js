@@ -5,7 +5,16 @@ var colorMap = [
   "#ffffff"
 ]
 
-var levels = []
+
+var levelDefs = [
+  {numRow:3,numLanes:4},
+  {numRow:3,numLanes:5},
+  {numRow:4,numLanes:6},
+  {numRow:5,numLanes:7},
+  {numRow:6,numLanes:8},
+]
+
+var levels = [];
 
 var currentLevel = 0;
 var wdx;
@@ -21,11 +30,12 @@ function setup() {
   wh = windowHeight;
   createCanvas(ww, ww);
 
-  levels[0] = createLevel(6, 8);
+  levels[0] = createLevel(currentLevel);
 }
 
-function createLevel(numRow, numLanes) {
-  var lanes = constructProblem(numRow, numLanes)
+function createLevel(levelNum) {
+
+  var lanes = constructProblem(levelDefs[levelNum].numRow, levelDefs[levelNum].numLanes)
 
   const hue = 0;
   const saturation = 70 + round(random(20));
@@ -39,7 +49,7 @@ function createLevel(numRow, numLanes) {
   level.score.current = 0;//round(maxColors / 4);
 
   if (level.done) {
-    level = createLevel(numRow, numLanes);
+    level = createLevel(levelNum);
   }
 
 
@@ -426,7 +436,10 @@ function touchEnded() {
   checkLanes(levels[currentLevel]);
 
   if (levels[currentLevel].done) {
-    levels[currentLevel] = createLevel(6, 8);
+    if (levelDefs[currentLevel+1]) {
+      currentLevel++;
+    }
+    levels[currentLevel] = createLevel(currentLevel);
 
     return;
   }

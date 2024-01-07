@@ -25,7 +25,7 @@ var maxColors = 26;
 var scoreHeight;
 var streak = 0;
 var score = { current: 10, max: 20, row: [] };
-var mode = 0;
+var gameState = 2;
 
 function setup() {
   ww = windowWidth;
@@ -187,6 +187,17 @@ function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
 };
 
+function drawEndLevel(level) {
+  wdx = window.innerWidth / level.lanes.length;
+  scoreHeight = window.innerHeight * 0.96;
+  textSize(window.innerWidth/15);
+  wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
+  var t1= "Score "+ score.current;
+  text(t1,window.innerWidth/2-textWidth(t1)/2,window.innerHeight/2); 
+
+}
+
+
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
   scoreHeight = window.innerHeight * 0.96;
@@ -249,7 +260,24 @@ function draw() {
 
   resizeCanvas(windowWidth, windowHeight);
   background(colorMap[0]);
-  drawLevel(levels[currentLevel])
+  switch (gameState) {
+    //game start screen
+    case 0:
+
+    //level start screen
+    case 1:
+
+    //level screen
+    case 2:
+      drawLevel(levels[currentLevel])
+      break;
+    //level end screen
+    case 3:
+      drawEndLevel(levels[currentLevel])
+      break;
+    default:
+      console.log("unexpected gameState");
+  }
 }
 
 function windowResized() {
@@ -402,12 +430,18 @@ function touchMoved() {
 }
 
 function touchEnded() {
-  //removeColor(levels[currentLevel]);
-  //removeColor(levels[currentLevel]);
-
   const deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
+  if (gameState==3) {
+    if (levelDefs[currentLevel + 1]) {
+      currentLevel++;
+    }
+    levels[currentLevel] = createLevel(currentLevel);
+
+    gameState =2;
+    return;
+  }
 
   if (deltaX != 0 || deltaY != 0) {
     levels[currentLevel].score.current -= 2;
@@ -443,11 +477,9 @@ function touchEnded() {
   checkLanes(levels[currentLevel]);
   console.log(levels[currentLevel].done)
   if (levels[currentLevel].done) {
-    if (levelDefs[currentLevel + 1]) {
-      currentLevel++;
+    if (gameState == 2) {
+      gameState = 3;
     }
-    levels[currentLevel] = createLevel(currentLevel);
-
     return;
   }
 }

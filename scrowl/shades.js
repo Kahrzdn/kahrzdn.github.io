@@ -7,11 +7,11 @@ var colorMap = [
 
 
 var levelDefs = [
-  {numRow:3,numLanes:4},
-  {numRow:3,numLanes:5},
-  {numRow:4,numLanes:6},
-  {numRow:5,numLanes:7},
-  {numRow:6,numLanes:8},
+  { numRow: 3, numLanes: 4 },
+  { numRow: 3, numLanes: 5 },
+  { numRow: 4, numLanes: 6 },
+  { numRow: 5, numLanes: 7 },
+  { numRow: 6, numLanes: 8 },
 ]
 
 var levels = [];
@@ -23,7 +23,9 @@ var ww;
 var wh;
 var maxColors = 26;
 var scoreHeight;
+var streak = 0;
 var score = { current: 10, max: 20, row: [] };
+var mode = 0;
 
 function setup() {
   ww = windowWidth;
@@ -300,10 +302,11 @@ function arrayRotateRow(arr, row, reverse) {
 
 
 function checkLanes(level) {
-  var lanes = level.lanes;
-  var doneCheck = true;
 
-  var sl = "";
+  var lanes = level.lanes;
+  console.log("before")
+  logMatrix(lanes);
+
   for (var i = 0; i < lanes.length; i++) {
     var prev = lanes[i][0].num
     for (var j = 1; j < lanes[i].length; j++) {
@@ -317,10 +320,6 @@ function checkLanes(level) {
           refillColor(level);
           refillColor(level);
           refillColor(level);
-
-        }
-        else {
-          doneCheck = false;
         }
       }
 
@@ -341,18 +340,26 @@ function checkLanes(level) {
           refillColor(level);
           refillColor(level);
         }
-        else {
-          doneCheck = false;
-        }
-
       }
 
       prev = cell;
     }
   }
 
-  level.done = doneCheck;
 
+  for (var i = 0; i < level.lanes.length; i++) {
+    var lane = level.lanes[i];
+    for (var j = 0; j < lane.length; j++) {
+      if (lane[j].num > 1) {
+        level.done = false;
+        return;
+      }
+    }
+  }
+  console.log("after")
+  logMatrix(lanes);
+  level.done = true;
+  return
 }
 
 
@@ -434,9 +441,9 @@ function touchEnded() {
   laneDX = 0;
   laneDY = 0;
   checkLanes(levels[currentLevel]);
-
+  console.log(levels[currentLevel].done)
   if (levels[currentLevel].done) {
-    if (levelDefs[currentLevel+1]) {
+    if (levelDefs[currentLevel + 1]) {
       currentLevel++;
     }
     levels[currentLevel] = createLevel(currentLevel);

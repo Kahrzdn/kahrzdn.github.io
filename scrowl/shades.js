@@ -189,11 +189,12 @@ function shuffle(array) {
 
 function drawEndLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
-  scoreHeight = window.innerHeight * 0.96;
-  textSize(window.innerWidth/15);
+  fill(255);
+  stroke(0);
+  textSize(window.innerWidth / 15);
   wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
-  var t1= "Score "+ score.current;
-  text(t1,window.innerWidth/2-textWidth(t1)/2,window.innerHeight/2); 
+  var t1 = "Score 🌈 " + level.score.current;
+  text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
 
 }
 
@@ -433,13 +434,13 @@ function touchEnded() {
   const deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
-  if (gameState==3) {
+  if (gameState == 3) {
     if (levelDefs[currentLevel + 1]) {
       currentLevel++;
     }
     levels[currentLevel] = createLevel(currentLevel);
 
-    gameState =2;
+    gameState = 2;
     return;
   }
 

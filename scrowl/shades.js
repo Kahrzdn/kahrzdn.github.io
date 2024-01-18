@@ -63,7 +63,7 @@ function createLevel(levelNum) {
 function constructProblem(level) {
   const numRow=level.numRow;
   const numLanes=level.numLanes;
-  
+  console.log(level)
   if (level.seed) {
     randomSeed(level.seed);
   }
@@ -101,7 +101,7 @@ function constructNextMatch(matrix, numRow, numLanes, color) {
 
   var spot = [{}, {}];
   if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
-    logMatrix(matrix)
+   // logMatrix(matrix)
     return false;
   }
   insertTiles(matrix, spot, color);
@@ -346,7 +346,7 @@ function checkLanes(level) {
 
   var lanes = level.lanes;
   console.log("before")
-  logMatrix(lanes);
+  //logMatrix(lanes);
 
   for (var i = 0; i < lanes.length; i++) {
     var prev = lanes[i][0].num
@@ -398,7 +398,7 @@ function checkLanes(level) {
     }
   }
   console.log("after")
-  logMatrix(lanes);
+  //logMatrix(lanes);
   level.done = true;
   return
 }
@@ -447,7 +447,7 @@ function touchEnded() {
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
   if (gameState == 3) {
-    if (mouseX/wdx>0.5) {
+    if (mouseX/window.innerWidth>0.5) {
       if (levelDefs[currentLevel + 1]) {
        currentLevel++;
       }

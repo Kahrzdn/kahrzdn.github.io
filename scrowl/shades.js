@@ -7,7 +7,9 @@ var colorMap = [
 
 
 var levelDefs = [
-  { numRow: 3, numLanes: 4 },
+  { numRow: 3, numLanes: 4,seed:0.1 },
+  { numRow: 3, numLanes: 4,seed:0.2 },
+  { numRow: 3, numLanes: 4,seed:0.3 },
   { numRow: 3, numLanes: 5 },
   { numRow: 4, numLanes: 6 },
   { numRow: 5, numLanes: 7 },
@@ -37,7 +39,7 @@ function setup() {
 
 function createLevel(levelNum) {
 
-  var lanes = constructProblem(levelDefs[levelNum].numRow, levelDefs[levelNum].numLanes)
+  var lanes = constructProblem(levelDefs[levelNum])
 
   const hue = 0;
   const saturation = 70 + round(random(20));
@@ -58,7 +60,14 @@ function createLevel(levelNum) {
   return level;
 }
 
-function constructProblem(numRow, numLanes) {
+function constructProblem(level) {
+  const numRow=level.numRow;
+  const numLanes=level.numLanes;
+  
+  if (level.seed) {
+    randomSeed(level.seed);
+  }
+  
   const orgMaxColors = maxColors;
   for (var n = 0; n < 900; n++) {
     maxColors = orgMaxColors;

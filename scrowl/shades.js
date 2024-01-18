@@ -7,13 +7,13 @@ var colorMap = [
 
 
 var levelDefs = [
-  { numRow: 3, numLanes: 4,seed:0.1 },
-  { numRow: 3, numLanes: 4,seed:0.2 },
-  { numRow: 3, numLanes: 4,seed:0.3 },
-  { numRow: 3, numLanes: 5 },
-  { numRow: 4, numLanes: 6 },
-  { numRow: 5, numLanes: 7 },
-  { numRow: 6, numLanes: 8 },
+  { name: "1", numRow: 3, numLanes: 4,seed:7 },
+  { name: "2",numRow: 3, numLanes: 4,seed:10 },
+  { name: "3",numRow: 3, numLanes: 4,seed:78 },
+  { name: "4",numRow: 3, numLanes: 5, seed:54 },
+  { name: "5",numRow: 4, numLanes: 6, seed:54 },
+  { name: "6",numRow: 5, numLanes: 7 },
+  { name: "7",numRow: 6, numLanes: 8 },
 ]
 
 var levels = [];
@@ -204,7 +204,10 @@ function drawEndLevel(level) {
   wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
   var t1 = "Score 🌈 " + level.score.current;
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
-
+  var t2 = "↻ Retake ";
+  text(t2, window.innerWidth / 4 - textWidth(t2) / 2, 3*window.innerHeight / 4);
+  var t3 = "Next Level ➡️";
+  text(t3, 3*window.innerWidth / 4 - textWidth(t3) / 2, 3*window.innerHeight / 4);
 }
 
 
@@ -444,9 +447,12 @@ function touchEnded() {
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
   if (gameState == 3) {
-    if (levelDefs[currentLevel + 1]) {
-      currentLevel++;
+    if (mouseX/wdx>0.5) {
+      if (levelDefs[currentLevel + 1]) {
+       currentLevel++;
+      }
     }
+ 
     levels[currentLevel] = createLevel(currentLevel);
 
     gameState = 2;

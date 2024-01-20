@@ -7,6 +7,7 @@ var colorMap = [
 
 
 var levelDefs = [
+  { name: "startscreen", numRow: 10, numLanes: 17, seed: 7 },
   { name: "1", numRow: 3, numLanes: 4, seed: 7 },
   { name: "2", numRow: 3, numLanes: 4, seed: 10 },
   { name: "3", numRow: 3, numLanes: 4, seed: 78 },
@@ -197,12 +198,13 @@ function shuffle(array) {
 };
 
 function drawStartScreen() {
+  drawLevel(levels[currentLevel]);
   fill(255);
   stroke(0);
   textSize(window.innerWidth / 5);
   var t1 = "SHADES";
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
-
+  
 }
 
 function drawEndLevel(level) {
@@ -456,6 +458,8 @@ function touchEnded() {
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
   if (gameState == 0) {
+    currentLevel=1;
+    levels[currentLevel] = createLevel(currentLevel);
     gameState = 2;
     return;
   }

@@ -7,13 +7,13 @@ var colorMap = [
 
 
 var levelDefs = [
-  { name: "1", numRow: 3, numLanes: 4,seed:7 },
-  { name: "2",numRow: 3, numLanes: 4,seed:10 },
-  { name: "3",numRow: 3, numLanes: 4,seed:78 },
-  { name: "4",numRow: 3, numLanes: 5, seed:54 },
-  { name: "5",numRow: 4, numLanes: 6, seed:54 },
-  { name: "6",numRow: 5, numLanes: 7 },
-  { name: "7",numRow: 6, numLanes: 8 },
+  { name: "1", numRow: 3, numLanes: 4, seed: 7 },
+  { name: "2", numRow: 3, numLanes: 4, seed: 10 },
+  { name: "3", numRow: 3, numLanes: 4, seed: 78 },
+  { name: "4", numRow: 3, numLanes: 5, seed: 54 },
+  { name: "5", numRow: 4, numLanes: 6, seed: 54 },
+  { name: "6", numRow: 5, numLanes: 7 },
+  { name: "7", numRow: 6, numLanes: 8 },
 ]
 
 var levels = [];
@@ -27,7 +27,7 @@ var maxColors = 26;
 var scoreHeight;
 var streak = 0;
 var score = { current: 10, max: 20, row: [] };
-var gameState = 2;
+var gameState = 0;
 
 function setup() {
   ww = windowWidth;
@@ -61,13 +61,13 @@ function createLevel(levelNum) {
 }
 
 function constructProblem(level) {
-  const numRow=level.numRow;
-  const numLanes=level.numLanes;
+  const numRow = level.numRow;
+  const numLanes = level.numLanes;
   console.log(level)
   if (level.seed) {
     randomSeed(level.seed);
   }
-  
+
   const orgMaxColors = maxColors;
   for (var n = 0; n < 900; n++) {
     maxColors = orgMaxColors;
@@ -101,7 +101,7 @@ function constructNextMatch(matrix, numRow, numLanes, color) {
 
   var spot = [{}, {}];
   if (!tryfindTwinSpot(matrix, numRow, numLanes, spot)) {
-   // logMatrix(matrix)
+    // logMatrix(matrix)
     return false;
   }
   insertTiles(matrix, spot, color);
@@ -196,18 +196,25 @@ function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
 };
 
+function drawStartScreen() {
+  fill(255);
+  stroke(0);
+  textSize(window.innerWidth / 5);
+  var t1 = "SHADES";
+  text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
+
+}
+
 function drawEndLevel(level) {
-  wdx = window.innerWidth / level.lanes.length;
   fill(255);
   stroke(0);
   textSize(window.innerWidth / 15);
-  wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
   var t1 = "Score 🌈 " + level.score.current;
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
   var t2 = "↻ Retake ";
-  text(t2, window.innerWidth / 4 - textWidth(t2) / 2, 3*window.innerHeight / 4);
+  text(t2, window.innerWidth / 4 - textWidth(t2) / 2, 3 * window.innerHeight / 4);
   var t3 = "Next Level ➡️";
-  text(t3, 3*window.innerWidth / 4 - textWidth(t3) / 2, 3*window.innerHeight / 4);
+  text(t3, 3 * window.innerWidth / 4 - textWidth(t3) / 2, 3 * window.innerHeight / 4);
 }
 
 
@@ -269,6 +276,7 @@ function drawBrick(px, py, dx, dy, cell) {
 
 }
 
+
 function draw() {
 
   resizeCanvas(windowWidth, windowHeight);
@@ -276,7 +284,8 @@ function draw() {
   switch (gameState) {
     //game start screen
     case 0:
-
+      drawStartScreen();
+      break;
     //level start screen
     case 1:
 
@@ -446,13 +455,18 @@ function touchEnded() {
   const deltaX = round((mouseX - mousepos.x) / wdx);
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
+  if (gameState == 0) {
+    gameState = 2;
+    return;
+  }
+
   if (gameState == 3) {
-    if (mouseX/window.innerWidth>0.5) {
+    if (mouseX / window.innerWidth > 0.5) {
       if (levelDefs[currentLevel + 1]) {
-       currentLevel++;
+        currentLevel++;
       }
     }
- 
+
     levels[currentLevel] = createLevel(currentLevel);
 
     gameState = 2;

@@ -27,7 +27,7 @@ var wh;
 var maxColors = 26;
 var scoreHeight;
 var streak = 0;
-var score = { current: 10, max: 20, row: [] };
+var score = { current: 8, max: 13, row: [] };
 var gameState = 0;
 
 function setup() {

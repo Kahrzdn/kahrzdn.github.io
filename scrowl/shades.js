@@ -7,7 +7,7 @@ var colorMap = [
 
 
 var levelDefs = [
-  { name: "startscreen", numRow: 10, numLanes: 17, seed: 7 },
+  { name: "startscreen", numRow: 9, numLanes: 12, seed: 7 },
   { name: "1", numRow: 3, numLanes: 4, seed: 7 },
   { name: "2", numRow: 3, numLanes: 4, seed: 10 },
   { name: "3", numRow: 3, numLanes: 4, seed: 78 },

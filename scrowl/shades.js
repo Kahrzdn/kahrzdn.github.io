@@ -49,9 +49,9 @@ function createLevel(levelNum) {
   }
 
 
-  var level = { lanes: lanes, score: { matches:0, moves:0 } };
+  var level = { lanes: lanes, score: { matches: 0, moves: 0 } };
   checkLanes(level);
-  level.score = { matches:0, moves:0 } 
+  level.score = { matches: 0, moves: 0 }
 
   if (level.done) {
     level = createLevel(levelNum);
@@ -204,14 +204,14 @@ function drawStartScreen() {
   textSize(window.innerWidth / 5);
   var t1 = "SHADES";
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
-  
+
 }
 
 function drawEndLevel(level) {
   fill(255);
   stroke(0);
   textSize(window.innerWidth / 15);
-  var t1 = "🌈 Score " + round(100*level.score.matches/level.score.moves)+"%";
+  var t1 = "🌈 Score " + round(100 * level.score.matches / level.score.moves) + "%";
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
   var t2 = "↻ Retake ";
   text(t2, window.innerWidth / 4 - textWidth(t2) / 2, 3 * window.innerHeight / 4);
@@ -223,7 +223,7 @@ function drawEndLevel(level) {
 function drawLevel(level) {
   wdx = window.innerWidth / level.lanes.length;
   scoreHeight = window.innerHeight * 0.96;
-  wdy = (window.innerHeight * 0.95) / level.lanes[0].length;
+  wdy = (window.innerHeight) / level.lanes[0].length;
   for (var i = 0; i < level.lanes.length; i++) {
     if (lanePosX == i)
       drawLane(i, level.lanes.length, laneDX, laneDY, level.lanes[i])
@@ -234,8 +234,12 @@ function drawLevel(level) {
 }
 
 function drawScore(score) {
+  var pct = 100;
+  if (score.moves > 0) {
+    pct = score.matches / score.moves;
+  }
   for (var i = 0; i < score.max; i++) {
-    var x = 3 + i * window.innerWidth / score.max;
+    var x = 3 + i * window.innerWidth * pct;
     var y = scoreHeight;
 
     if (score.current > i) {
@@ -450,7 +454,7 @@ function touchEnded() {
   const deltaY = round((mouseY - mousepos.y) / wdy);
 
   if (gameState == 0) {
-    currentLevel=1;
+    currentLevel = 1;
     levels[currentLevel] = createLevel(currentLevel);
     gameState = 2;
     return;

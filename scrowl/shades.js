@@ -27,7 +27,7 @@ var wh;
 var maxColors = 26;
 var scoreHeight;
 var streak = 0;
-var score = { current: 8, max: 13, row: [] };
+var score = { matches: 0, moves: 0 };
 var gameState = 0;
 
 function setup() {
@@ -49,9 +49,9 @@ function createLevel(levelNum) {
   }
 
 
-  var level = { lanes: lanes, score: { current: round(maxColors / 4), max: maxColors, row: [] } };
+  var level = { lanes: lanes, score: { matches:0, moves:0 } };
   checkLanes(level);
-  level.score.current = 0;//round(maxColors / 4);
+  level.score = { matches:0, moves:0 } 
 
   if (level.done) {
     level = createLevel(levelNum);
@@ -211,7 +211,7 @@ function drawEndLevel(level) {
   fill(255);
   stroke(0);
   textSize(window.innerWidth / 15);
-  var t1 = "Score 🌈 " + level.score.current;
+  var t1 = "🌈 Score " + round(100*level.score.matches/level.score.moves)+"%";
   text(t1, window.innerWidth / 2 - textWidth(t1) / 2, window.innerHeight / 2);
   var t2 = "↻ Retake ";
   text(t2, window.innerWidth / 4 - textWidth(t2) / 2, 3 * window.innerHeight / 4);
@@ -230,7 +230,7 @@ function drawLevel(level) {
     else
       drawLane(i, level.lanes.length, laneDX, 0, level.lanes[i]);
   }
-  drawScore(level.score);
+//  drawScore(level.score);
 }
 
 function drawScore(score) {
@@ -365,10 +365,9 @@ function checkLanes(level) {
       var cell = lanes[i][j].num;
       if (cell > 1) {
         if (prev == cell) {
-          level.score.row.push(lanes[i][j].num);
+          level.score.matches++;
           lanes[i][j - 1] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current += 3;
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -384,10 +383,9 @@ function checkLanes(level) {
       var cell = lanes[i][j].num;
       if (cell > 1) {
         if (prev == cell) {
-          level.score.row.push(lanes[i][j].num);
+          level.score.matches++;
           lanes[i - 1][j] = { color: 1, num: 1 };
           lanes[i][j] = { color: 1, num: 1 };
-          level.score.current += 3;
           refillColor(level);
           refillColor(level);
           refillColor(level);
@@ -444,14 +442,8 @@ function touchMoved() {
 
   lanePosX = floor(mousepos.x / wdx);
   lanePosY = floor(mousepos.y / wdy);
-  const deltaX = round((laneDX) / wdx);
-  const deltaY = round((laneDY) / wdy);
-
-  if (deltaY == 0 && deltaX == 0)
-    return;
-
-
 }
+
 
 function touchEnded() {
   const deltaX = round((mouseX - mousepos.x) / wdx);
@@ -478,7 +470,7 @@ function touchEnded() {
   }
 
   if (deltaX != 0 || deltaY != 0) {
-    levels[currentLevel].score.current -= 2;
+    levels[currentLevel].score.moves++;
   }
 
   if (abs(deltaX) > abs(deltaY)) {

@@ -7,15 +7,22 @@ var colorMap = [
 
 
 var levelDefs = [
-  { name: "startscreen", numRow: 9, numLanes: 12, seed: 7 },
-  { name: "1", numRow: 3, numLanes: 4, seed: 10 },
-  { name: "2", numRow: 3, numLanes: 4, seed: 7 },
-  { name: "3", numRow: 3, numLanes: 4, seed: 78 },
-  { name: "4", numRow: 3, numLanes: 5, seed: 54 },
-  { name: "4", numRow: 3, numLanes: 5, seed: 55 },
-  { name: "4", numRow: 3, numLanes: 5, seed: 56 },
+  { name: "startscreen", numRow: 9, numLanes: 12, seed: 3,maxPairs:17 },
+  { name: "1", numRow: 9, numLanes: 12, seed: 11, maxPairs:1 },
+  { name: "2", numRow: 9, numLanes: 12, seed: 7,maxPairs:2 },
+  { name: "3", numRow: 9, numLanes: 12, seed: 78 ,maxPairs:3 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 54 ,maxPairs:3 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 55,maxPairs:3  },
+  { name: "4", numRow: 9, numLanes: 12, seed: 56 ,maxPairs:4 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 57 ,maxPairs:4 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 58 ,maxPairs:4 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 59 ,maxPairs:4 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 54 ,maxPairs:5 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 55 ,maxPairs:5 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 56 ,maxPairs:5 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 57 ,maxPairs:5 },
+  { name: "4", numRow: 9, numLanes: 12, seed: 58 ,maxPairs:5 },
 
-  { name: "5", numRow: 4, numLanes: 6, seed: 54 },
   { name: "6", numRow: 5, numLanes: 7 },
   { name: "7", numRow: 6, numLanes: 8 },
 ]
@@ -27,7 +34,8 @@ var wdx;
 var wdy;
 var ww;
 var wh;
-var maxColors = 26;
+const orgMaxColors = 26;
+var maxcolors;
 var scoreHeight;
 var streak = 0;
 var score = { matches: 0, moves: 0 };
@@ -72,9 +80,12 @@ function constructProblem(level) {
     randomSeed(level.seed);
   }
 
-  const orgMaxColors = maxColors;
+  maxColors = orgMaxColors;
+  if (level.maxPairs) {
+    maxColors= level.maxPairs+3;
+  }
   for (var n = 0; n < 900; n++) {
-    maxColors = orgMaxColors;
+    
     var lanes = [];
     for (var i = 0; i < numLanes; i++) {
       var lane = [];

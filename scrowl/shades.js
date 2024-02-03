@@ -8,10 +8,13 @@ var colorMap = [
 
 var levelDefs = [
   { name: "startscreen", numRow: 9, numLanes: 12, seed: 7 },
-  { name: "1", numRow: 3, numLanes: 4, seed: 7 },
-  { name: "2", numRow: 3, numLanes: 4, seed: 10 },
+  { name: "1", numRow: 3, numLanes: 4, seed: 10 },
+  { name: "2", numRow: 3, numLanes: 4, seed: 7 },
   { name: "3", numRow: 3, numLanes: 4, seed: 78 },
   { name: "4", numRow: 3, numLanes: 5, seed: 54 },
+  { name: "4", numRow: 3, numLanes: 5, seed: 55 },
+  { name: "4", numRow: 3, numLanes: 5, seed: 56 },
+
   { name: "5", numRow: 4, numLanes: 6, seed: 54 },
   { name: "6", numRow: 5, numLanes: 7 },
   { name: "7", numRow: 6, numLanes: 8 },

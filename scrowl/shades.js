@@ -1,6 +1,6 @@
 var colorMap = [
-  "#000000",
-  "#222",
+  "#111",
+  "#eee",
   "#999999",
   "#ffffff"
 ]
@@ -291,7 +291,7 @@ function drawBrick(px, py, dx, dy, cell) {
   col = color(colorMap[cell.color]);
   noStroke();
   fill(col);
-  rect(px * wdx + dx + 2, py * wdy + dy + 2, wdx - 4, wdy - 4, 5);
+  rect(px * wdx + dx + 1, py * wdy + dy + 1, wdx - 2, wdy - 2,2);
 
 
 }

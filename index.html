@@ -28,10 +28,14 @@
     <script id="fragmentShader" type="x-shader/x-fragment">
         uniform vec2 u_resolution;
         uniform float u_time;
+        uniform vec2 u_mouse;
         void main()	{
             vec2 st = gl_FragCoord.xy/u_resolution.xy;
+            vec2 m = u_mouse/u_resolution.xy;
+            float d=distance(st,m);
             
-            vec3 rgb = vec3(sin(st.x*(mod(st.y*100.,2.)-0.5)),cos(st.y),cos(u_time/20.));
+            float dc =distance(st,vec2(0.5));
+            vec3 rgb = vec3(d,sin(d*cos(u_time*.013)*88.),sin(-dc*cos(u_time*.015)*88.));
             gl_FragColor = vec4(rgb, 1.);
         }
     </script>
@@ -58,7 +62,8 @@
 
             uniforms = {
                 u_time: { type: "f", value: 1.0 },
-                u_resolution: { type: "v2", value: new THREE.Vector2() }
+                u_resolution: { type: "v2", value: new THREE.Vector2() },
+                u_mouse: { type: "v2", value: new THREE.Vector2() }
             };
 
             material = new THREE.ShaderMaterial({
@@ -77,6 +82,11 @@
             uniforms.u_resolution.value.x = window.innerWidth;
             uniforms.u_resolution.value.y = window.innerHeight;
             renderer.setSize(window.innerWidth, window.innerHeight);
+
+            document.onmousemove = function(e){
+              uniforms.u_mouse.value.x = e.pageX
+              uniforms.u_mouse.value.y = window.innerHeight-e.pageY
+            }
         }
 
         function animate() {

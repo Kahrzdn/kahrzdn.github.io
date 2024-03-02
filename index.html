@@ -35,8 +35,8 @@
             float d=distance(st,m);
             
             float dc =distance(st,vec2(0.5));
-            vec3 rgb = vec3(d,sin(d*cos(u_time*.013)*88.),sin(-dc*cos(u_time*.015)*88.));
-            gl_FragColor = vec4(rgb, 1.);
+            vec3 rgb = vec3(d,sin(d*cos(u_time*.013)*350.),sin(-dc*cos(u_time*.015)*300.));
+            gl_FragColor = vec4(rgb.y+rgb.z,rgb.x,rgb.x, 1.);
         }
     </script>
     <script>

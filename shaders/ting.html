@@ -18,7 +18,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
 
     <script id="vertexShader" type="x-shader/x-vertex">
-        uniform float u_time;
+        uniform float time;
         uniform vec2 resolution;
         void main()	{
             gl_Position = vec4( position, 1.0 );
@@ -26,13 +26,12 @@
     </script>
 
     <script id="fragmentShader" type="x-shader/x-fragment">
-        uniform vec2 u_resolution;
-        uniform float u_time;
+        uniform float time;
+        uniform vec2 resolution;
         void main()	{
-            vec2 st = gl_FragCoord.xy/u_resolution.xy;
-            
-            vec3 rgb = vec3(sin(st.x*(mod(st.y*100.,2.)-0.5)),cos(st.y),cos(u_time/20.));
-            gl_FragColor = vec4(rgb, 1.);
+            float x = mod(time + gl_FragCoord.x, 20.) < 10. ? 1. : 0.;
+            float y = mod(time + gl_FragCoord.y, 20.) < 10. ? 1. : 0.;
+            gl_FragColor = vec4(vec3(min(x, y)), 1.);
         }
     </script>
     <script>
@@ -57,8 +56,8 @@
             scene = new THREE.Scene();
 
             uniforms = {
-                u_time: { type: "f", value: 1.0 },
-                u_resolution: { type: "v2", value: new THREE.Vector2() }
+                time: { type: "f", value: 1.0 },
+                resolution: { type: "v2", value: new THREE.Vector2() }
             };
 
             material = new THREE.ShaderMaterial({
@@ -74,8 +73,8 @@
             renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
             container.appendChild(renderer.domElement);
 
-            uniforms.u_resolution.value.x = window.innerWidth;
-            uniforms.u_resolution.value.y = window.innerHeight;
+            uniforms.resolution.value.x = window.innerWidth;
+            uniforms.resolution.value.y = window.innerHeight;
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
@@ -87,7 +86,7 @@
         function render() {
             var elapsedMilliseconds = Date.now() - startTime;
             var elapsedSeconds = elapsedMilliseconds / 1000.;
-            uniforms.u_time.value = 60. * elapsedSeconds;
+            uniforms.time.value = 60. * elapsedSeconds;
             renderer.render(scene, camera);
         }
     </script>

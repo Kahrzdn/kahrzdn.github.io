@@ -29,9 +29,12 @@
         uniform float time;
         uniform vec2 resolution;
         void main()	{
-            float x = mod(time + gl_FragCoord.x, 20.) < 10. ? 1. : 0.;
-            float y = mod(time + gl_FragCoord.y, 20.) < 10. ? 1. : 0.;
-            gl_FragColor = vec4(vec3(min(x, y)), 1.);
+            vec2 course = vec2(3000.*cos(time/100.),300.*sin(time/100.));
+            float x = mod(course.x + gl_FragCoord.x, 200.) < 195. ? 0.3 : 0.5;
+            x = mod(course.x + gl_FragCoord.x, 200.) < 5. ? 0.2 : x;
+            float y = mod(course.y + gl_FragCoord.y, 200.) < 195. ? 0.3 : 0.5;
+            y = mod(course.y + gl_FragCoord.y, 200.) < 5. ? 0.2 : y;
+            gl_FragCoogl_FragColor = vec4(vec3(x+y), 1.);
         }
     </script>
     <script>

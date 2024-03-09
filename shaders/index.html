@@ -30,7 +30,7 @@
         uniform float u_time;
         uniform vec2 u_mouse;
         void main()	{
-            float size=200.+190.*sin(u_time/100.);
+            float size=200.+70.*sin(u_time/100.);
             vec2 course = vec2(3000.*cos(u_time/100.),300.*sin(u_time/100.));
             float x = mod(course.x + gl_FragCoord.x, size) < size*.98 ? 0.3 : 0.5;
             x = mod(course.x + gl_FragCoord.x, size) < 5. ? 0.2 : x;

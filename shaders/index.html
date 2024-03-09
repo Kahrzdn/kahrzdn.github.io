@@ -33,9 +33,9 @@
             float size=200.+70.*sin(u_time/100.);
             vec2 course = vec2(3000.*cos(u_time/100.),300.*sin(u_time/100.));
             float x = mod(course.x + gl_FragCoord.x, size) < size*.98 ? 0.3 : 0.5;
-            x = mod(course.x + gl_FragCoord.x, size) < 5. ? 0.2 : x;
+            x = mod(course.x + gl_FragCoord.x, size) < size*.02 ? 0.2 : x;
             float y = mod(course.y + gl_FragCoord.y, size) < size*.98 ? 0.3 : 0.5;
-            y = mod(course.y + gl_FragCoord.y, size) < 5. ? 0.2 : y;
+            y = mod(course.y + gl_FragCoord.y, size) < size*.02 ? 0.2 : y;
             gl_FragColor = vec4(vec3(x+y), 1.);
         }
     </script>
